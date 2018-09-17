@@ -94,9 +94,8 @@ def LeastSquares(N, deg, lamb, method='self'):
     print('R2-score: %.3f' % r2)
 
 
-def LeastSquares(N, deg, lamb, method='self'):
+# def Ridge(N, deg, lamb, method='self'):
 
 
-    if __name__=='__main__':
-
-LeastSquares(100, 3, 0)
+if __name__=='__main__':
+    LeastSquares(100, 3, 0)
