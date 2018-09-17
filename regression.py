@@ -2,7 +2,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, RidgeCV, Lasso
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.metrics import mean_squared_error, r2_score, mean_squared_log_error, mean_absolute_error
 import numpy as np
@@ -10,56 +10,75 @@ from random import random, seed
 from Franke import FrankeFunction
 import sys
 
+x = np.random.rand(100,1)
+y = np.random.rand(100,1)
+noise = 0.5*np.random.randn(100,1)
 
-def LeastSquares(N, deg, lamb, method='self'):
+def Regression(N, deg, sigma, lamb, method='ls', stats = True):
+    """ method = 'ls', 'ridge'"""
 
-
-    x = np.random.rand(N,1)
-    y = np.random.rand(N,1)
+    #x = np.random.rand(N,1)
+    #y = np.random.rand(N,1)
     xy = np.append(x, y, axis=1)
 
-    if lamb != 0:
-        noise = lamb*np.random.randn(N,1)
+    if sigma != 0:
+        #noise = sigma*np.random.randn(N,1)
         z = FrankeFunction(x, y)*noise
     else:
         z = FrankeFunction(x,y)
 
-    ### SELF WRITTEN
-    #---------------------------------
-    if method == 'self':
+    XY = np.ones([N, 1])
 
-        XY = np.ones([N, 1])
+    count= 1
+    for i in range(1,deg+1):
+        for j in range(i+1):
+            if (i == 0) and (j==0):
+                continue
+            #print("x^", i-j, "y^", j)
+            col = x**(i-j)*y**j
+            XY = np.append(XY, col, axis=1)
+            count += 1
+    #print("count: ", count)
 
-        count= 1
-        for i in range(1,deg+1):
-            for j in range(i+1):
-                if (i == 0) and (j==0):
-                    continue
-                #print("x^", i-j, "y^", j)
-                col = x**(i-j)*y**j
-                XY = np.append(XY, col, axis=1)
-                count += 1
-        #print("count: ", count)
-
-        """ Alternative
-        degree = 3 #Polynomial degree
-        for deg in range(degree + 1):
-            liste = np.arange(deg+1)
-            for i, j in zip(liste, np.flip(liste, 0)):
-                print(j, i)
-        """
+    if method == 'ls':
 
         beta = np.linalg.inv(XY.T.dot(XY)).dot(XY.T).dot(z)
         zpredict = XY.dot(beta)
 
-        print("betas: (beta0, beta1, ...)\n", "-"*30, "\n", beta.flatten())
 
-    ### SCIKIT
-    #----------------------------------
+    elif method == 'ridge':
 
-    elif method == 'scikit':
-        poly = PolynomialFeatures(degree=deg)
-        XY = poly.fit_transform(xy)
+        I = np.identity(XY.shape[1])
+
+        beta = np.linalg.inv(XY.T.dot(XY) + lamb*I).dot(XY.T).dot(z)
+        zpredict = XY.dot(beta)
+
+    else:
+        print("Error: 'method' must either be 'ls' or 'ridge'. \nExiting... ")
+        sys.exit(0)
+
+    print("betas: (beta0, beta1, ...)\n", "-"*30, "\n", beta.flatten())
+    if stats == True:
+        statistics(XY, z, zpredict, deg, lamb, method)
+
+
+
+def Regression_scikit(N, deg, sigma, lamb, method='ls', stats = True):
+
+    #x = np.random.rand(N,1)
+    #y = np.random.rand(N,1)
+    xy = np.append(x, y, axis=1)
+
+    if sigma != 0:
+        #noise = sigma*np.random.randn(N,1)
+        z = FrankeFunction(x, y)*noise
+    else:
+        z = FrankeFunction(x,y)
+
+    poly = PolynomialFeatures(degree=deg)
+    XY = poly.fit_transform(xy)
+
+    if method == 'ls':
 
         linreg = LinearRegression()
         linreg.fit(XY,z)
@@ -69,21 +88,57 @@ def LeastSquares(N, deg, lamb, method='self'):
 
         zpredict = linreg.predict(XY)
 
+    elif method == 'ridge':
+
+        ridge=RidgeCV([float(lamb)])
+        ridge.fit(XY,z)
+        zpredict = ridge.predict(XY)
+        print("beta 0: ", ridge.intercept_)
+        print("betas : ", ridge.coef_)
+
+    elif method == 'lasso':
+
+        lasso = Lasso([float(lamb)])
+        lasso.fit(XY,z)
+        ypredict = lasso.predict(XY)
+        print("beta 0: ", lasso.intercept_)
+        print("betas : ", lasso.coef_)
+
 
     else:
-        print("Error: 'method' must be either 'self' for the self-written method, or 'scikit' to use\
-                        the regression method of scikit learn.\n Exiting...")
+        print("Error: 'method' must be either 'ls', 'ridge', or 'lasso'. \nExiting...")
         sys.exit(0)
 
+    if stats == True:
+        statistics(XY, z, zpredict, deg, lamb, method)
 
-    # STATISTICS
-    #-------------------------------
+
+def statistics(XY, z, zpredict, deg, lamb, method):
+
+    print("Statistic for the %s method:" % (method))
+    print("="*30)
+
+    N = XY.shape[0]
 
     squared_error = np.sum((z - zpredict)**2)
-
     var_z = 1.0/(N - deg -1)*squared_error
-    var_b = np.diag(np.linalg.inv(XY.T.dot(XY))*var_z)
-    print("\nVariance betas: (Var(beta0), Var(beta1), ...)\n", "-"*50, "\n", var_b)
+
+    if method == 'ls':
+
+        var_b = np.diag(np.linalg.inv(XY.T.dot(XY))*var_z)
+        print("\nVariance betas: (Var(beta0), Var(beta1), ...)\n", "-"*50, "\n", var_b)
+
+    elif method == 'ridge':
+
+        # Maybe eaiser with SVD
+
+        I = np.identity(XY.shape[1])
+
+        XY2 = XY.T.dot(XY)
+        W = np.linalg.inv(XY2 + lamb*I).dot(XY2)
+
+        var_b = np.diag(W.dot(np.linalg.inv(XY2)).dot(W.T))*var_z
+        print("\nVariance betas: (Var(beta0), Var(beta1), ...)\n", "-"*50, "\n", var_b)
 
     #Mean squared error
     mse = 1.0/N*squared_error
@@ -93,9 +148,10 @@ def LeastSquares(N, deg, lamb, method='self'):
     r2 = 1 - np.sum((z - zpredict)**2)/np.sum((z - zmean)**2)
     print('R2-score: %.3f' % r2)
 
+    print("="*30)
 
-# def Ridge(N, deg, lamb, method='self'):
 
-
-if __name__=='__main__':
-    LeastSquares(100, 3, 0)
+#Regression(100, 3, 0, 0.01, 'ridge', stats = False)
+#Regression(100, 3, 0.5, 2.0, 'ridge', stats = False)
+Regression_scikit(100, 3, 0, 0.01, method='ridge')
+#Regression_scikit(100, 3, 0, 0.01, method='lasso')
