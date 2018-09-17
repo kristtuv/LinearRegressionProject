@@ -83,7 +83,7 @@ def LeastSquares(N, deg, lamb, method='self'):
 
     var_z = 1.0/(N - deg -1)*squared_error
     var_b = np.diag(np.linalg.inv(XY.T.dot(XY))*var_z)
-    print("\nVariance betas: (Var(beta0), Var(beta1), ...)\n", "-"*50, "\n", var_b)
+    print(r"\nVariance betas: (Var(beta0), Var(beta1), ...)\n", "-"*50, "\n", var_b)
 
     #Mean squared error
     mse = 1.0/N*squared_error
