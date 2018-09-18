@@ -1,6 +1,6 @@
 import numpy as np
 class LinReg:
-    def __init__(self, x, y, Function):
+    def __init__(self, x, y, Function, Test):
         """ Trainingdata X and Y
             Function for fitting
             Fraction of TrainData set aside for testing
@@ -10,10 +10,13 @@ class LinReg:
         self.yTrain = y
         self.zTrain = Function
         self.N = len(self.xTrain)
-
+        self.Test = Test
+        self.PolyDegree()
+        self._testshit()
+        self.compute()
+        
                
-    def _testshit(self,Test):
-        self.Test=Test
+    def _testshit(self):
         nTestData = int (np.floor(self.N*self.Test)) #Number of training data
         TestDataIndex = np.random.choice(range(self.N), nTestData,\
                 replace = False)
@@ -23,9 +26,13 @@ class LinReg:
         self.zTest = self.zTrain[TestDataIndex]
 
         #Removing TestData from TraingData
-        self.xTrain = np.delete(self.xTrain, TestDataIndex)
-        self.yTrain =  np.delete(self.yTrain, TestDataIndex)
-        self.zTrain =  np.delete(self.zTrain, TestDataIndex)
+        # self.xTrain = np.delete(self.xTrain, TestDataIndex).reshape(len(self.xTrain) - nTestData, 1)
+        self.xTrain = np.delete(self.xTrain, TestDataIndex, axis = 0 )
+        self.yTrain =  np.delete(self.yTrain, TestDataIndex, axis = 0 )
+        self.zTrain =  np.delete(self.zTrain, TestDataIndex, axis = 0 )
+   
+
+        self._rearrange()
     def bootstrap(self, nBoots = 1000):
         print('not implemented yet')
         exit()
@@ -49,7 +56,7 @@ class LinReg:
         """
         N = len(self.xTrain)
         self.XY = np.ones([N, 1])
-        for deg in range(1,self.degree + 1):
+        for deg in range(1, self.degree + 1):
             liste = np.arange(deg+1)
             for i, j in zip(liste, np.flip(liste, 0)):
                 col = self.xTrain**(j)*self.yTrain**i
@@ -57,20 +64,21 @@ class LinReg:
 
     def statistics(self):
         N = self.XY.shape[0]
-        squared_error = np.sum((self.zTest - self.zpredict)**2)
-        zmean = 1.0/N*np.sum(self.zTest)
+        squared_error = np.sum((self.zTrain- self.zpredict)**2)
+        zmean = 1.0/N*np.sum(self.zTrain)
         self.var_z = 1.0/(N - self.degree -1)*squared_error
         
         #Mean squared error
         self.mse = 1.0/N*squared_error
         #R2-score
-        self.r2 = 1 - np.sum((self.zTest - self.zpredict)**2)/np.sum((self.zTest - zmean)**2)
+        self.r2 = 1 - np.sum((self.zTrain - self.zpredict)**2)/np.sum((self.zTrain - zmean)**2)
+
+    def PolyDegree(self, Degree = 3):
+        self.degree = Degree
 
 class OLS(LinReg):
 
-    def compute(self, Degree):
-        self.degree = Degree
-        self._rearrange()
+    def compute(self):
         self.beta = np.linalg.inv(self.XY.T.dot(self.XY)).dot(self.XY.T).dot(self.zTrain)
         self.zpredict = self.XY.dot(self.beta)
 

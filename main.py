@@ -6,8 +6,8 @@ from mlearning.LinReg import OLS
 x = np.random.rand(10,1)
 y = np.random.rand(10,1)
 f = Franke(x,y).compute()
-a = OLS(x,y,f)
-a._testshit( 0.8)
+a = OLS(x,y,f, 0.2)
+a.statistics()
 # def bootstrap(self, nBoots = 1000):
 #         bootVec = np.zeros(nBoots)
 #         for k in range(0,nBoots):
