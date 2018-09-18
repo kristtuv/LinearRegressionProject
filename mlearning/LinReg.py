@@ -6,10 +6,10 @@ class LinReg:
             Fraction of TrainData set aside for testing
         """
         
-        self.x = x
-        self.y = y
-        self.z = Function
-        self.N = len(self.x)
+        self.xTrain = x
+        self.yTrain = y
+        self.zTrain = Function
+        self.N = len(self.xTrain)
 
                
     def _testshit(self,Test):
@@ -18,25 +18,25 @@ class LinReg:
         TestDataIndex = np.random.choice(range(self.N), nTestData,\
                 replace = False)
         #Storing TestData
-        self.TestDataY = self.x[TestDataIndex]
-        self.TestDataX = self.y[TestDataIndex]
-        self.TestDataZ = self.z[TestDataIndex]
+        self.xTest = self.xTrain[TestDataIndex]
+        self.yTest = self.yTrain[TestDataIndex]
+        self.zTest = self.zTrain[TestDataIndex]
 
         #Removing TestData from TraingData
-        self.x = np.delete(self.x, TestDataIndex)
-        self.y =  np.delete(self.y, TestDataIndex)
-        self.z =  np.delete(self.z, TestDataIndex)
+        self.xTrain = np.delete(self.xTrain, TestDataIndex)
+        self.yTrain =  np.delete(self.yTrain, TestDataIndex)
+        self.zTrain =  np.delete(self.zTrain, TestDataIndex)
     def bootstrap(self, nBoots = 1000):
         print('not implemented yet')
         exit()
         localDatacopy = self.data.copy()
         # self.data = np.zeros(nBoots)
-        self.x = np.zeros(nBoots)
-        self.y = np.zeros(nBoots)
+        self.xTrain = np.zeros(nBoots)
+        self.yTrain = np.zeros(nBoots)
         for k in range(0,nBoots):
             self.data[k] = np.average(np.random.choice(localDatacopy, len(localDatacopy)))
-            self.x[k] = np.average(np.random.choice(localDatacopy, len(localDatacopy)))
-            self.y[k] = np.average(np.random.choice(localDatacopy, len(localDatacopy)))
+            self.xTrain[k] = np.average(np.random.choice(localDatacopy, len(localDatacopy)))
+            self.yTrain[k] = np.average(np.random.choice(localDatacopy, len(localDatacopy)))
         # self.bootAvg = np.average(bootVec)
         # self.bootVar = np.var(bootVec)
         # self.bootStd = np.std(bootVec)
@@ -47,31 +47,31 @@ class LinReg:
         Will return a matrix of the form [1, x^ny^0, x^(n-1)y^1 ... x^0y^n], 
         where n is the polynomial degree
         """
-        N = len(self.x)
+        N = len(self.xTrain)
         self.XY = np.ones([N, 1])
         for deg in range(1,self.degree + 1):
             liste = np.arange(deg+1)
             for i, j in zip(liste, np.flip(liste, 0)):
-                col = self.x**(j)*self.y**i
+                col = self.xTrain**(j)*self.yTrain**i
                 self.XY = np.append(self.XY, col, axis=1)
 
     def statistics(self):
         N = self.XY.shape[0]
-        squared_error = np.sum((self.z - self.zpredict)**2)
-        zmean = 1.0/N*np.sum(self.z)
+        squared_error = np.sum((self.zTest - self.zpredict)**2)
+        zmean = 1.0/N*np.sum(self.zTest)
         self.var_z = 1.0/(N - self.degree -1)*squared_error
         
         #Mean squared error
         self.mse = 1.0/N*squared_error
         #R2-score
-        self.r2 = 1 - np.sum((self.z - self.zpredict)**2)/np.sum((self.z - zmean)**2)
+        self.r2 = 1 - np.sum((self.zTest - self.zpredict)**2)/np.sum((self.zTest - zmean)**2)
 
 class OLS(LinReg):
 
     def compute(self, Degree):
         self.degree = Degree
         self._rearrange()
-        self.beta = np.linalg.inv(self.XY.T.dot(self.XY)).dot(self.XY.T).dot(self.z)
+        self.beta = np.linalg.inv(self.XY.T.dot(self.XY)).dot(self.XY.T).dot(self.zTrain)
         self.zpredict = self.XY.dot(self.beta)
 
     def statistics(self):
@@ -87,7 +87,7 @@ class Ridge(LinReg):
         self.degree = Degree
         self._rearrange()
         self.I = np.identity(XY.shape[1])
-        self.beta = np.linalg.inv(self.XY.T.dot(self.XY) + lamb*I).dot(self.XY.T).dot(self.z)
+        self.beta = np.linalg.inv(self.XY.T.dot(self.XY) + lamb*I).dot(self.XY.T).dot(self.zTrain)
         self.zpredict = XY.dot(self.beta)
 
 
