@@ -1,10 +1,27 @@
+#Version python 3.6
 import numpy as np
+import os
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    BLUE = '\033[34m'
+    YELLOW = '\033[93m'
+    RED = '\033[31m'
+    GREEN = '\033[32m'
+
+
 class LinReg:
     def __init__(self, x, y, Function, Test):
         """ Trainingdata X and Y
             Function for fitting
             Fraction of TrainData set aside for testing
-        """
+       """
         
         self.xTrain = x
         self.yTrain = y
@@ -26,18 +43,19 @@ class LinReg:
         self.zTest = self.zTrain[TestDataIndex]
 
         #Removing TestData from TraingData
-        # self.xTrain = np.delete(self.xTrain, TestDataIndex).reshape(len(self.xTrain) - nTestData, 1)
         self.xTrain = np.delete(self.xTrain, TestDataIndex, axis = 0 )
         self.yTrain =  np.delete(self.yTrain, TestDataIndex, axis = 0 )
         self.zTrain =  np.delete(self.zTrain, TestDataIndex, axis = 0 )
-   
 
+        #Rearranging Training data to match SckiKit and creating XY matrix
         self._rearrange()
+        
     def bootstrap(self, nBoots = 1000):
         print('not implemented yet')
         exit()
-        localDatacopy = self.data.copy()
-        # self.data = np.zeros(nBoots)
+        localXTrain = self.xTrain
+        localYTrain = self.yTrain
+        localZTrain = self.zTrain
         self.xTrain = np.zeros(nBoots)
         self.yTrain = np.zeros(nBoots)
         for k in range(0,nBoots):
@@ -71,7 +89,28 @@ class LinReg:
         #Mean squared error
         self.mse = 1.0/N*squared_error
         #R2-score
+        
         self.r2 = 1 - np.sum((self.zTrain - self.zpredict)**2)/np.sum((self.zTrain - zmean)**2)
+    def __str__(self):
+        rows, columns = os.popen('stty size', 'r').read().split()
+        np.set_printoptions(precision=2, linewidth=int(columns))
+
+        var_b = str(self.var_b)
+        mse= str(self.mse)
+        r2= str(self.r2)
+        
+        print(bcolors.YELLOW  + "="*min(len(var_b), int(columns)) + bcolors.ENDC)
+        print(bcolors.UNDERLINE + bcolors.BLUE + "Variance of Beta:" + bcolors.ENDC)
+        print(var_b,"\n")
+
+        print(bcolors.UNDERLINE + bcolors.GREEN + "Mean Squared Error:" + bcolors.ENDC)
+        print(mse,"\n")
+
+        print(bcolors.UNDERLINE + bcolors.RED + "R2 score:" + bcolors.ENDC)
+        print(r2,"\n")
+        print(bcolors.YELLOW  + "="*min(len(var_b), int(columns)) + bcolors.ENDC)
+
+        return ""                
 
     def PolyDegree(self, Degree = 3):
         self.degree = Degree
@@ -86,9 +125,6 @@ class OLS(LinReg):
         super().statistics()
         self.var_b = np.diag(np.linalg.inv(self.XY.T.dot(self.XY))*self.var_z)
 
-
-        def __str__(self):
-            pass
 
 class Ridge(LinReg):
     def compute(self, Degree):
