@@ -22,7 +22,7 @@ class LinReg:
             Function for fitting
             Fraction of TrainData set aside for testing
        """
-        
+
         self.xTrain = x
         self.yTrain = y
         self.zTrain = Function
@@ -31,8 +31,8 @@ class LinReg:
         self.PolyDegree()
         self._testshit()
         self.compute()
-        
-               
+
+
     def _testshit(self):
         nTestData = int (np.floor(self.N*self.Test)) #Number of training data
         TestDataIndex = np.random.choice(range(self.N), nTestData,\
@@ -49,7 +49,7 @@ class LinReg:
 
         #Rearranging Training data to match SckiKit and creating XY matrix
         self._rearrange()
-        
+
     def bootstrap(self, nBoots = 1000):
         print('not implemented yet')
         exit()
@@ -69,7 +69,7 @@ class LinReg:
         """
         Function for rearranging the order of the polynomial to match what is
         used by Scikit-learn. This is done for easy comparison of beta values.
-        Will return a matrix of the form [1, x^ny^0, x^(n-1)y^1 ... x^0y^n], 
+        Will return a matrix of the form [1, x^ny^0, x^(n-1)y^1 ... x^0y^n],
         where n is the polynomial degree
         """
         N = len(self.xTrain)
@@ -85,11 +85,11 @@ class LinReg:
         squared_error = np.sum((self.zTrain- self.zpredict)**2)
         zmean = 1.0/N*np.sum(self.zTrain)
         self.var_z = 1.0/(N - self.degree -1)*squared_error
-        
+
         #Mean squared error
         self.mse = 1.0/N*squared_error
         #R2-score
-        
+
         self.r2 = 1 - np.sum((self.zTrain - self.zpredict)**2)/np.sum((self.zTrain - zmean)**2)
     def __str__(self):
         rows, columns = os.popen('stty size', 'r').read().split()
@@ -98,7 +98,7 @@ class LinReg:
         var_b = str(self.var_b)
         mse= str(self.mse)
         r2= str(self.r2)
-        
+
         print(bcolors.YELLOW  + "="*min(len(var_b), int(columns)) + bcolors.ENDC)
         print(bcolors.UNDERLINE + bcolors.BLUE + "Variance of Beta:" + bcolors.ENDC)
         print(var_b,"\n")
@@ -110,7 +110,7 @@ class LinReg:
         print(r2,"\n")
         print(bcolors.YELLOW  + "="*min(len(var_b), int(columns)) + bcolors.ENDC)
 
-        return ""                
+        return ""
 
     def PolyDegree(self, Degree = 3):
         self.degree = Degree
@@ -140,5 +140,3 @@ class Ridge(LinReg):
         XY2 = self.XY.T.dot(self.XY)
         W = np.linalg.inv(XY2 + lamb*self.I).dot(XY2)
         self.var_b = np.diag(W.dot(np.linalg.inv(XY2)).dot(W.T))*self.var_z
-
- 

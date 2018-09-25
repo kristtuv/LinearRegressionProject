@@ -8,6 +8,7 @@ y = np.random.rand(10,1)
 f = Franke(x,y).compute()
 a = OLS(x,y,f, 0.2)
 a.statistics()
+print(a)
 # def bootstrap(self, nBoots = 1000):
 #         bootVec = np.zeros(nBoots)
 #         for k in range(0,nBoots):
@@ -39,5 +40,3 @@ a.statistics()
 # # print(
 # # print(a.data)
 # # # print(a.bootVec)
-
-
