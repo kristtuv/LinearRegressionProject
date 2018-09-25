@@ -20,21 +20,22 @@ class LinReg:
         self.z = z
         self.deg = deg
         self.N = x.shape[0]
+        self.lamb = 0.1
 
         xy = np.append(x, y, axis=1)
         poly = PolynomialFeatures(degree = deg)
         self.XY = poly.fit_transform(xy)
-    
-    @property    
+    """
+    @property
     def set_ols(self):
         self.regressionmethod = getattr(self, 'ols')
-    @property    
+    @property
     def set_ridge(self):
         self.regressionmethod = getattr(self, 'ridge')
-    @property    
+    @property
     def set_lasso(self):
         self.regressionmethod = getattr(self, 'lasso')
-
+    """
 
     def ols(self, XY = None, z = None):
         """
@@ -60,7 +61,7 @@ class LinReg:
 
         return beta
 
-    def ridge(self, lamb, XY = None, z = None):
+    def ridge(self, XY = None, z = None):
         """
         Performes a Ridge regression linear fit
 
@@ -78,12 +79,16 @@ class LinReg:
         if z is None: z = self.z
 
         I = np.identity(XY.shape[1])
-        beta = scl.inv(XY.T @ XY + lamb*I) @ XY.T @ z
+        #beta = scl.inv(XY.T @ XY + self.lamb*I) @ XY.T @ z
+
+        U, s, Vt = scl.svd(XY, full_matrices=False)
+        d = (s/(s **2 + self.lamb)).reshape(XY.shape[1], 1)
+        beta = Vt.T @ (d * U.T @ z)
 
         return beta
 
 
-    def lasso(self, lamb, XY = None, z = None):
+    def lasso(self, XY = None, z = None):
         """
         Performes a Lasso regression linear fit
 
@@ -100,11 +105,10 @@ class LinReg:
         if XY is None: XY = self.XY
         if z is None: z = self.z
 
-        lass = Lasso([float(lamb)])
+        lass = Lasso([float(self.lamb)], fit_intercept=False)
         lass.fit(XY, z)
-        print(lass.intercept_)
 
-        beta = lass.coef_
+        beta = (lass.coef_).reshape(XY.shape[1], 1)
 
         return beta
 
@@ -140,7 +144,7 @@ class LinReg:
         return 1 - np.sum((z - zpred)**2)/np.sum((z - zmean)**2)
 
 
-    def bootstrap(self, nBoots):
+    def bootstrap(self, nBoots, regressionmethod):
         """
         I dont fucking know
         """
@@ -153,7 +157,7 @@ class LinReg:
             XY = self.XY[idx]
             z = self.z[idx]
             # beta = self.ols(XY, z)
-            beta = self.regressionmethod(XY, z) 
+            beta = regressionmethod(XY, z)
             betas[i] = beta.flatten()
             zpredict = XY @ beta
             mse = self.MSE(z, zpredict)
@@ -171,7 +175,7 @@ class LinReg:
         print("\nVariance betas after %i resamples: \n" %(nBoots), beta_var)
 
 
-    def kfold(self, nfolds):
+    def kfold(self, nfolds, regressionmethod):
         """
         I dont fucking know
         """
@@ -191,7 +195,7 @@ class LinReg:
             Z_Test = Z_Train.pop(i)
             Z_Train = np.concatenate(Z_Train)
 
-            beta = self.ols(XY_Train, Z_Train)
+            beta = regressionmethod(XY_Train, Z_Train)
             zpredict = XY_Test @ beta
             mse = self.MSE(Z_Test, zpredict)
             mse_ave += mse

@@ -11,9 +11,13 @@ z = 2*x**2 + 3*y**2 + noise
 
 a = LinReg(x, y, z, deg)
 
-a.set_ols
+#a.lamb = 0.0001
+#beta = a.lasso()
+#print(beta)
 
- beta = a.ols()
+#a.set_ols
+
+ #beta = a.ols()
  # zpredict = a.XY @ beta
 
 
@@ -21,15 +25,17 @@ a.set_ols
  # r2 = a.R2(z, zpredict)
  # print("Initial MSE: ", mse)
  # print("Initial R2: ", r2)
- # print("\n")
+ # print("\n")a.lamb = 0.0001
 
  # print("Initial betas: \n", beta)
  # print("Initial Var(beta): \n", np.diag(a.var_ols))
  # print("="*20)
 
-
-# a.kfold(5)
-a.bootstrap(10000)
+#a.lamb = 0.0001
+a.kfold(5, a.ols)
+a.kfold(5, a.ridge)
+a.kfold(5, a.lasso)
+#a.bootstrap(10000, a.ridge)
 
 
 """
