@@ -117,9 +117,9 @@ class LinReg:
 
 class OLS(LinReg):
 
-    def compute(self):
+    def compute(self, XY):
         self.beta = np.linalg.inv(self.XY.T.dot(self.XY)).dot(self.XY.T).dot(self.zTrain)
-        self.zpredict = self.XY.dot(self.beta)
+        #self.zpredict = self.XY.dot(self.beta)
 
     def statistics(self):
         super().statistics()
