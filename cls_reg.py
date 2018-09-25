@@ -43,8 +43,9 @@ class LinReg:
         #beta = scl.inv(XY.T @ XY) @ XY.T @ z
         beta = np.linalg.pinv(XY) @ z
 
-        self.varz = np.var(z)
-        self.var_ols = np.linalg.pinv(XY.T @ XY)*self.varz
+        zpredict = XY @ beta
+        varz = 1.0/(XY.shape[0] - self.deg - 1)*np.sum((z - zpredict)**2)
+        self.var_ols = np.linalg.pinv(XY.T @ XY)*varz
 
         return beta
 
@@ -141,7 +142,7 @@ class LinReg:
             XY = self.XY[idx]
             z = self.z[idx]
 
-            beta = self.ols()
+            beta = self.ols(XY, z)
             betas[i] = beta.flatten()
             zpredict = XY @ beta
             mse = self.MSE(z, zpredict)
@@ -151,8 +152,8 @@ class LinReg:
         beta_var = np.var(betas, axis = 0)
 
         self.boot_mse = np.average(boot_mse)
-        self.boot_ave = np.var(boot_mse)
-        
+        self.boot_var = np.var(boot_mse)
+
         print("Average MSE after %i resamples: " %(nBoots), self.boot_mse)
         print("Variance of MSE after %i resamples: " %(nBoots), self.boot_var)
         print("\nAverage betas after %i resamples: \n" %(nBoots), beta_ave)
