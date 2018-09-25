@@ -24,6 +24,17 @@ class LinReg:
         xy = np.append(x, y, axis=1)
         poly = PolynomialFeatures(degree = deg)
         self.XY = poly.fit_transform(xy)
+    
+    @property    
+    def set_ols(self):
+        self.regressionmethod = getattr(self, 'ols')
+    @property    
+    def set_ridge(self):
+        self.regressionmethod = getattr(self, 'ridge')
+    @property    
+    def set_lasso(self):
+        self.regressionmethod = getattr(self, 'lasso')
+
 
     def ols(self, XY = None, z = None):
         """
@@ -141,8 +152,8 @@ class LinReg:
             idx = np.random.choice(self.N, self.N)
             XY = self.XY[idx]
             z = self.z[idx]
-
-            beta = self.ols(XY, z)
+            # beta = self.ols(XY, z)
+            beta = self.regressionmethod(XY, z) 
             betas[i] = beta.flatten()
             zpredict = XY @ beta
             mse = self.MSE(z, zpredict)

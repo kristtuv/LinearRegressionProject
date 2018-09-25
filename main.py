@@ -10,22 +10,25 @@ noise = 0.2*np.random.randn(N, 1)
 z = 2*x**2 + 3*y**2 + noise
 
 a = LinReg(x, y, z, deg)
-beta = a.ols()
-zpredict = a.XY @ beta
+
+a.set_ols
+
+ beta = a.ols()
+ # zpredict = a.XY @ beta
 
 
-mse = a.MSE(z, zpredict)
-r2 = a.R2(z, zpredict)
-print("Initial MSE: ", mse)
-print("Initial R2: ", r2)
-print("\n")
+ # mse = a.MSE(z, zpredict)
+ # r2 = a.R2(z, zpredict)
+ # print("Initial MSE: ", mse)
+ # print("Initial R2: ", r2)
+ # print("\n")
 
-print("Initial betas: \n", beta)
-print("Initial Var(beta): \n", np.diag(a.var_ols))
-print("="*20)
+ # print("Initial betas: \n", beta)
+ # print("Initial Var(beta): \n", np.diag(a.var_ols))
+ # print("="*20)
 
 
-#a.kfold(5)
+# a.kfold(5)
 a.bootstrap(10000)
 
 
