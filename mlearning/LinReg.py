@@ -1,5 +1,6 @@
 #Version python 3.6
 import numpy as np
+import scipy.linalg as sci
 import os
 class bcolors:
     HEADER = '\033[95m'
@@ -23,29 +24,28 @@ class LinReg:
             Fraction of TrainData set aside for testing
        """
         
-        self.xTrain = x
-        self.yTrain = y
-        self.zTrain = Function
-        self.N = len(self.xTrain)
+        self.x = x
+        self.y = y
+        self.z = Function
+        self.N = len(self.x)
         self.Test = Test
         self.PolyDegree()
-        self._testshit()
-        self.compute()
+        self._SplitData()
         
                
-    def _testshit(self):
+    def _SplitData(self):
         nTestData = int (np.floor(self.N*self.Test)) #Number of training data
         TestDataIndex = np.random.choice(range(self.N), nTestData,\
                 replace = False)
         #Storing TestData
-        self.xTest = self.xTrain[TestDataIndex]
-        self.yTest = self.yTrain[TestDataIndex]
-        self.zTest = self.zTrain[TestDataIndex]
+        self.xTest = self.x[TestDataIndex]
+        self.yTest = self.y[TestDataIndex]
+        self.zTest = self.z[TestDataIndex]
 
         #Removing TestData from TraingData
-        self.xTrain = np.delete(self.xTrain, TestDataIndex, axis = 0 )
-        self.yTrain =  np.delete(self.yTrain, TestDataIndex, axis = 0 )
-        self.zTrain =  np.delete(self.zTrain, TestDataIndex, axis = 0 )
+        self.xTrain = np.delete(self.x, TestDataIndex, axis = 0 )
+        self.yTrain =  np.delete(self.y, TestDataIndex, axis = 0 )
+        self.zTrain =  np.delete(self.z, TestDataIndex, axis = 0 )
 
         #Rearranging Training data to match SckiKit and creating XY matrix
         self._rearrange()
@@ -81,13 +81,14 @@ class LinReg:
                 self.XY = np.append(self.XY, col, axis=1)
 
     def statistics(self):
+        self.compute()
         N = self.XY.shape[0]
-        squared_error = np.sum((self.zTrain- self.zpredict)**2)
+        self.squared_error = np.sum((self.zTrain- self.zpredict)**2)
         zmean = 1.0/N*np.sum(self.zTrain)
-        self.var_z = 1.0/(N - self.degree -1)*squared_error
+        self.var_z = 1.0/(N - self.degree -1)*self.squared_error
         
         #Mean squared error
-        self.mse = 1.0/N*squared_error
+        self.mse = 1.0/N*self.squared_error
         #R2-score
         
         self.r2 = 1 - np.sum((self.zTrain - self.zpredict)**2)/np.sum((self.zTrain - zmean)**2)
@@ -115,8 +116,10 @@ class LinReg:
     def PolyDegree(self, Degree = 3):
         self.degree = Degree
 
-class OLS(LinReg):
+    def Evaluate(self):
+        pass
 
+class OLS(LinReg):
     def compute(self):
         self.beta = np.linalg.inv(self.XY.T.dot(self.XY)).dot(self.XY.T).dot(self.zTrain)
         self.zpredict = self.XY.dot(self.beta)

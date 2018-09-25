@@ -3,41 +3,40 @@ from mlearning.franke import Franke
 import numpy as np
 from mlearning.LinReg import LinReg
 from mlearning.LinReg import OLS
-x = np.random.rand(10,1)
-y = np.random.rand(10,1)
+x = np.random.rand(1000,1)
+y = np.random.rand(1000,1)
 f = Franke(x,y).compute()
-a = OLS(x,y,f, 0.2)
+a = OLS(x,y,f, 0.0)
+a.PolyDegree(5)
+print(a.__class__)
 a.statistics()
-# def bootstrap(self, nBoots = 1000):
-#         bootVec = np.zeros(nBoots)
-#         for k in range(0,nBoots):
-#             bootVec[k] = np.average(np.random.choice(self.data, len(self.data)))
-#         self.bootAvg = np.average(bootVec)
-#         self.bootVar = np.var(bootVec)
-#         self.bootStd = np.std(bootVec)
-#         return(bootVec)
-# plot(
-# ab = np.append(x,y)
+print(a)
+print(a.squared_error)
+print(a.var_z)
+# print(a.var_b)
+# print(a.squared_error)
+# print(a.var_z)
+# print(a)
 
-# # self.data[k] = np.average(np.random.choice(localDatacopy, len(localDatacopy)))
-# a = OLS(x, y, f)
-# a.compute(3)
-# print(a.zpredict)
-# a.statistics()
 # print(a.var_b)
 
-# b = Ridge(x, y, f)
-# b.compute(3)
-# b.statistics()
-# # a = LinReg(x, y , f )
-# # a.OLS(3)
-# # print(a.beta)
-# # print(x)
-# # print()
-# # print(a.data)
-# # a.bootstrap()
-# # print(
-# # print(a.data)
-# # # print(a.bootVec)
+# print(a.statistics().__dict__)
+# print(a.__dict__)
+# print(a)
 
+# x = np.random.randn(100)
+# print(np.average(x))
+# def bootstrap(nBoots = 1000000):
+#         bootVec = np.zeros(nBoots)
+#         for k in range(0,nBoots):
+#             bootVec[k] = np.average(np.random.choice(x, len(x)))
+#         bootAvg = np.average(bootVec)
+
+#         bootVar = np.var(bootVec)
+#         bootStd = np.std(bootVec)
+#         return bootVec
+
+# bootVec = bootstrap()
+# bootAvg = np.average(bootVec)
+# print(bootAvg)
 
