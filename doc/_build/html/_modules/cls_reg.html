@@ -1,0 +1,276 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>cls_reg &#8212; Linear Regression 0.01 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cls_reg</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="k">as</span> <span class="nn">scl</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="k">import</span> <span class="n">PolynomialFeatures</span>
+<span class="kn">from</span> <span class="nn">Franke</span> <span class="k">import</span> <span class="n">FrankeFunction</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="k">import</span> <span class="n">LinearRegression</span><span class="p">,</span> <span class="n">RidgeCV</span><span class="p">,</span> <span class="n">Lasso</span>
+
+<div class="viewcode-block" id="LinReg"><a class="viewcode-back" href="../index.html#cls_reg.LinReg">[docs]</a><span class="k">class</span> <span class="nc">LinReg</span><span class="p">:</span>
+<div class="viewcode-block" id="LinReg.__init__"><a class="viewcode-back" href="../index.html#cls_reg.LinReg.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">deg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param XY: A matrix of polynomialvalues</span>
+<span class="sd">        :param z: The values we are trying to fit</span>
+<span class="sd">        :param deg: The degree of polynomial we try to fit the data</span>
+<span class="sd">        :type XY: array</span>
+<span class="sd">        :type z: array</span>
+<span class="sd">        :type deg: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">z</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deg</span> <span class="o">=</span> <span class="n">deg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">xy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">poly</span> <span class="o">=</span> <span class="n">PolynomialFeatures</span><span class="p">(</span><span class="n">degree</span> <span class="o">=</span> <span class="n">deg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">XY</span> <span class="o">=</span> <span class="n">poly</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">xy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LinReg.ols"><a class="viewcode-back" href="../index.html#cls_reg.LinReg.ols">[docs]</a>    <span class="k">def</span> <span class="nf">ols</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">XY</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Performes a Ordinary least squares linear fit</span>
+
+<span class="sd">        :param XY: A matrix of polynomialvalues</span>
+<span class="sd">        :param z: The values we are trying to fit</span>
+<span class="sd">        :type XY: array</span>
+<span class="sd">        :type z: array</span>
+<span class="sd">        :return: The coefficient of the fitted polynomial</span>
+<span class="sd">        :rtype: array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">XY</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">XY</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">XY</span>
+        <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+
+        <span class="c1">#beta = scl.inv(XY.T @ XY) @ XY.T @ z</span>
+<div class="viewcode-block" id="LinReg.ridge"><a class="viewcode-back" href="../index.html#cls_reg.LinReg.ridge">[docs]</a>        <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">XY</span><span class="p">)</span> <span class="o">@</span> <span class="n">z</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">varz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">var_ols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">XY</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">XY</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">varz</span>
+
+        <span class="k">return</span> <span class="n">beta</span></div>
+
+    <span class="k">def</span> <span class="nf">ridge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lamb</span><span class="p">,</span> <span class="n">XY</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Performes a Ridge regression linear fit</span>
+
+<span class="sd">        :param XY: A matrix of polynomialvalues</span>
+<span class="sd">        :param z: The values we are trying to fit</span>
+<span class="sd">        :param lamb: The regularization constant </span>
+<span class="sd">        :type XY: array</span>
+<span class="sd">        :type z: array</span>
+<span class="sd">        :type lamb: float, int</span>
+<span class="sd">        :return: The coefficient of the fitted polynomial</span>
+<span class="sd">        :rtype: array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">XY</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">XY</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">XY</span>
+        <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+
+        <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">XY</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<div class="viewcode-block" id="LinReg.lasso"><a class="viewcode-back" href="../index.html#cls_reg.LinReg.lasso">[docs]</a>        <span class="n">beta</span> <span class="o">=</span> <span class="n">scl</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">XY</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">XY</span> <span class="o">+</span> <span class="n">lamb</span><span class="o">*</span><span class="n">I</span><span class="p">)</span> <span class="o">@</span> <span class="n">XY</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">z</span>
+
+        <span class="k">return</span> <span class="n">beta</span></div>
+
+
+    <span class="k">def</span> <span class="nf">lasso</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lamb</span><span class="p">,</span> <span class="n">XY</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Performes a Lasso regression linear fit</span>
+
+<span class="sd">        :param XY: A matrix of polynomialvalues</span>
+<span class="sd">        :param z: The values we are trying to fit</span>
+<span class="sd">        :param lamb: The regularization constant </span>
+<span class="sd">        :type XY: array</span>
+<span class="sd">        :type z: array</span>
+<span class="sd">        :type lamb: float, int</span>
+<span class="sd">        :return: The coefficient of the fitted polynomial</span>
+<span class="sd">        :rtype: array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">XY</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">XY</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">XY</span>
+        <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+
+        <span class="n">lass</span> <span class="o">=</span> <span class="n">Lasso</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">lamb</span><span class="p">)])</span>
+        <span class="n">lass</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">XY</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">lass</span><span class="o">.</span><span class="n">intercept_</span><span class="p">)</span>
+
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">lass</span><span class="o">.</span><span class="n">coef_</span>
+
+        <span class="k">return</span> <span class="n">beta</span></div>
+
+
+<div class="viewcode-block" id="LinReg.MSE"><a class="viewcode-back" href="../index.html#cls_reg.LinReg.MSE">[docs]</a>    <span class="k">def</span> <span class="nf">MSE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">zpred</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds the mean squared error of the real data and predicted values</span>
+<span class="sd">        :param z: real data</span>
+<span class="sd">        :param zpred: predicted data</span>
+<span class="sd">        :type z: array</span>
+<span class="sd">        :type zpred: array</span>
+<span class="sd">        :return: The mean squared error</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">z</span> <span class="o">-</span> <span class="n">zpred</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LinReg.R2"><a class="viewcode-back" href="../index.html#cls_reg.LinReg.R2">[docs]</a>    <span class="k">def</span> <span class="nf">R2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">zpred</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds the R2 error of the real data and predicted values</span>
+<span class="sd">        :param z: real data</span>
+<span class="sd">        :param zpred: predicted data</span>
+<span class="sd">        :type z: array</span>
+<span class="sd">        :type zpred: array</span>
+<span class="sd">        :return: The mean squared error</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+
+        <span class="n">zmean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">z</span> <span class="o">-</span> <span class="n">zpred</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">z</span> <span class="o">-</span> <span class="n">zmean</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LinReg.bootstrap"><a class="viewcode-back" href="../index.html#cls_reg.LinReg.bootstrap">[docs]</a>    <span class="k">def</span> <span class="nf">bootstrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nBoots</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        I dont fucking know</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">boot_mse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nBoots</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nBoots</span><span class="p">):</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">)</span>
+            <span class="n">XY</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">XY</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+            <span class="n">beta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ols</span><span class="p">()</span>
+<div class="viewcode-block" id="LinReg.kfold"><a class="viewcode-back" href="../index.html#cls_reg.LinReg.kfold">[docs]</a>            <span class="n">zpredict</span> <span class="o">=</span> <span class="n">XY</span> <span class="o">@</span> <span class="n">beta</span>
+            <span class="n">mse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSE</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">zpredict</span><span class="p">)</span>
+            <span class="n">boot_mse</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mse</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">boot_mse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">boot_mse</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boot_ave</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">boot_mse</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Average MSE after </span><span class="si">%i</span><span class="s2"> resamples: &quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">nBoots</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">boot_mse</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Variance of MSE after </span><span class="si">%i</span><span class="s2"> resamples: &quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">nBoots</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">boot_ave</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">kfold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nfolds</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        I dont fucking know</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+
+        <span class="n">XY_folds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">XY</span><span class="p">,</span> <span class="n">nfolds</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">z_folds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">nfolds</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">mse_ave</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nfolds</span><span class="p">):</span>
+
+            <span class="n">XY_Train</span> <span class="o">=</span> <span class="n">XY_folds</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">XY_Test</span> <span class="o">=</span> <span class="n">XY_Train</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">XY_Train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">XY_Train</span><span class="p">)</span>
+
+            <span class="n">Z_Train</span> <span class="o">=</span> <span class="n">z_folds</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">Z_Test</span> <span class="o">=</span> <span class="n">Z_Train</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">Z_Train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">Z_Train</span><span class="p">)</span>
+
+            <span class="n">beta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="n">XY_Train</span><span class="p">,</span> <span class="n">Z_Train</span><span class="p">)</span>
+            <span class="n">zpredict</span> <span class="o">=</span> <span class="n">XY_Test</span> <span class="o">@</span> <span class="n">beta</span>
+            <span class="n">mse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSE</span><span class="p">(</span><span class="n">Z_Test</span><span class="p">,</span> <span class="n">zpredict</span><span class="p">)</span>
+            <span class="n">mse_ave</span> <span class="o">+=</span> <span class="n">mse</span>
+
+        <span class="n">mse_ave</span> <span class="o">/=</span> <span class="n">nfolds</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;k-fold average MSE: &quot;</span><span class="p">,</span> <span class="n">mse_ave</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Linear Regression</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Tommy Myrvik, Kristian Tuv.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

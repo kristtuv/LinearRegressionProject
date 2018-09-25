@@ -1,0 +1,248 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Welcome to Linear Regression’s documentation! &#8212; Linear Regression 0.01 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-linear-regression-s-documentation">
+<h1>Welcome to Linear Regression’s documentation!<a class="headerlink" href="#welcome-to-linear-regression-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-cls_reg"></span><dl class="class">
+<dt id="cls_reg.LinReg">
+<em class="property">class </em><code class="descclassname">cls_reg.</code><code class="descname">LinReg</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em>, <em>deg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="cls_reg.LinReg.MSE">
+<code class="descname">MSE</code><span class="sig-paren">(</span><em>z</em>, <em>zpred</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.MSE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.MSE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the mean squared error of the real data and predicted values
+:param z: real data
+:param zpred: predicted data
+:type z: array
+:type zpred: array
+:return: The mean squared error
+:rtype: float</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cls_reg.LinReg.R2">
+<code class="descname">R2</code><span class="sig-paren">(</span><em>z</em>, <em>zpred</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.R2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.R2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the R2 error of the real data and predicted values
+:param z: real data
+:param zpred: predicted data
+:type z: array
+:type zpred: array
+:return: The mean squared error
+:rtype: float</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cls_reg.LinReg.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em>, <em>deg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>XY</strong> (<em>array</em>) – A matrix of polynomialvalues</li>
+<li><strong>z</strong> (<em>array</em>) – The values we are trying to fit</li>
+<li><strong>deg</strong> (<em>int</em>) – The degree of polynomial we try to fit the data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cls_reg.LinReg.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#cls_reg.LinReg.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cls_reg.LinReg.bootstrap">
+<code class="descname">bootstrap</code><span class="sig-paren">(</span><em>nBoots</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.bootstrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.bootstrap" title="Permalink to this definition">¶</a></dt>
+<dd><p>I dont fucking know</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cls_reg.LinReg.kfold">
+<code class="descname">kfold</code><span class="sig-paren">(</span><em>nfolds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.kfold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.kfold" title="Permalink to this definition">¶</a></dt>
+<dd><p>I dont fucking know</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cls_reg.LinReg.lasso">
+<code class="descname">lasso</code><span class="sig-paren">(</span><em>lamb</em>, <em>XY=None</em>, <em>z=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.lasso"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.lasso" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performes a Lasso regression linear fit</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>XY</strong> (<em>array</em>) – A matrix of polynomialvalues</li>
+<li><strong>z</strong> (<em>array</em>) – The values we are trying to fit</li>
+<li><strong>lamb</strong> (<em>float</em><em>, </em><em>int</em>) – The regularization constant</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The coefficient of the fitted polynomial</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cls_reg.LinReg.ols">
+<code class="descname">ols</code><span class="sig-paren">(</span><em>XY=None</em>, <em>z=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.ols"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.ols" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performes a Ordinary least squares linear fit</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>XY</strong> (<em>array</em>) – A matrix of polynomialvalues</li>
+<li><strong>z</strong> (<em>array</em>) – The values we are trying to fit</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The coefficient of the fitted polynomial</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cls_reg.LinReg.ridge">
+<code class="descname">ridge</code><span class="sig-paren">(</span><em>lamb</em>, <em>XY=None</em>, <em>z=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.ridge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.ridge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performes a Ridge regression linear fit</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>XY</strong> (<em>array</em>) – A matrix of polynomialvalues</li>
+<li><strong>z</strong> (<em>array</em>) – The values we are trying to fit</li>
+<li><strong>lamb</strong> (<em>float</em><em>, </em><em>int</em>) – The regularization constant</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The coefficient of the fitted polynomial</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">Linear Regression</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Tommy Myrvik, Kristian Tuv.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

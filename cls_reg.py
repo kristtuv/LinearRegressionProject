@@ -49,7 +49,7 @@ class LinReg:
         return beta
 
     def ridge(self, lamb, XY = None, z = None):
-         """
+        """
         Performes a Ridge regression linear fit
 
         :param XY: A matrix of polynomialvalues
@@ -72,7 +72,7 @@ class LinReg:
 
 
     def lasso(self, lamb, XY = None, z = None):
-          """
+        """
         Performes a Lasso regression linear fit
 
         :param XY: A matrix of polynomialvalues
@@ -112,7 +112,7 @@ class LinReg:
 
 
     def R2(self, z, zpred):
-         """
+        """
         Finds the R2 error of the real data and predicted values
         :param z: real data
         :param zpred: predicted data
@@ -152,7 +152,7 @@ class LinReg:
 
 
     def kfold(self, nfolds):
-         """
+        """
         I dont fucking know
         """
 
