@@ -2,88 +2,51 @@ import numpy as np
 from cls_reg import LinReg
 
 N = 100
-deg = 2
+deg = 1
 
 x = np.random.uniform(0, 1, (N, 1))
 y = np.random.uniform(0, 1, (N, 1))
-noise = 0.2*np.random.randn(N, 1)
+noise = 0.5*np.random.randn(N, 1)
 z = 2*x**2 + 3*y**2 + noise
-# print(type(x))
+
 a = LinReg(x, y, z, deg)
-a.bootstrap(100, a.ols)
-# b = None
-# print(type(b))
 
-##a.lamb = 0.0001
-##beta = a.lasso()
-##print(beta)
+beta = a.ols()
+zpredict = a.XY @ beta
 
-##a.set_ols
-
-# #beta = a.ols()
-# # zpredict = a.XY @ beta
+mse = a.MSE(z, zpredict)
+print("MSE = ", mse)
 
 
-# # mse = a.MSE(z, zpredict)
-# # r2 = a.R2(z, zpredict)
-# # print("Initial MSE: ", mse)
-# # print("Initial R2: ", r2)
-# # print("\n")a.lamb = 0.0001
+model_mean = np.average(zpredict)
+model_var = np.var(zpredict)
+model_bias = 1.0/N*np.sum((z - model_mean)**2)
+rest = 2.0/N*np.sum((z - model_mean)*(model_mean - zpredict))
 
-# # print("Initial betas: \n", beta)
-# # print("Initial Var(beta): \n", np.diag(a.var_ols))
-# # print("="*20)
+print("Model variance: ", model_var)
+print("Model bias: ", model_bias)
+print("Variance + Bias: ", model_var + model_bias, "\n")
+print("Rest: ", rest)
 
-##a.lamb = 0.0001
-## a.kfold(5, a.ols)
-## a.kfold(5, a.ridge)
-## a.kfold(5, a.lasso)
-##a.bootstrap(10000, a.ridge)
+#a.kfold(5, a.ols)
 
 
-#"""
-#a.ols()
-#zpredict = a.XY @ a.beta_ols
+"""
+a.bootstrap(10000, a.ols)
+print("\nBootstrap MSE: ", a.boot_mse)
 
-#mse = 1.0/x.shape[0]*np.sum((z - zpredict)**2)
-#print("Initial MSE: ", mse)
+zboot = a.XY @ a.beta_boot
+MSE_boot = a.MSE(z, zboot)
 
-#a.bootstrap(1000)
-#a.bootstrap(10000)
-#"""
+boot_mean = np.average(zboot)
+boot_var = np.var(zboot)
+boot_bias = 1.0/N*np.sum((z - boot_mean)**2)
 
-# import inspect
-# def check_types(*args):
-#     def decorator(func):
-#         def wrapper(*argswrapper):
-#             for a, b in zip(args, argswrapper):
-#                 if a is not type(b):
-#                     raise TypeError('See documentation for argument types')
-#             return func(*argswrapper)
-#         return wrapper
-#     return decorator
+print("Boot variance: ", boot_var)
+print("Boot bias: ", boot_bias)
+print("Variance + Bias (Boot): ", boot_var + boot_bias, "\n")
+#print("Rest: ", rest)
 
-
-
-
-# @check_types(int, float, int)
-# def testfunc(a, b, c):
-#     return 'MSE' 
-# print(testfunc(1, 2, 3))
-
-
-
-
-
-# def tags(tag_name):
-#     def tags_decorator(func):
-#         def func_wrapper(name):
-#             return "<{0}>{1}</{0}>".format(tag_name, func(name))
-#         return func_wrapper
-#     return tags_decorator
-
-# @tags("p")
-# def get_text(name):
-#     return "Hello "+name
-
-# print (get_text("John"))
+#print(model_var + model_bias)
+#print(model_var + model_bias + rest)
+"""
