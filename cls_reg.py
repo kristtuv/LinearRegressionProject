@@ -3,8 +3,24 @@ import scipy.linalg as scl
 from sklearn.preprocessing import PolynomialFeatures
 from Franke import FrankeFunction
 from sklearn.linear_model import LinearRegression, RidgeCV, Lasso
+from types import  MethodType
+
+
+def check_types(*args):
+    def decorator(func):
+        def wrapper(*argswrapper):
+            argswrappercopy = (argswrapper[1:])
+            for a, b in zip(args, argswrappercopy):
+                if a is not type(b) and type(b) is not type(None) :
+                    raise TypeError('See documentation for argument types')
+            return func(*argswrapper)
+        return wrapper
+    return decorator
+
+
 
 class LinReg:
+    @check_types(np.ndarray, np.ndarray, np.ndarray, int)
     def __init__(self, x, y, z, deg):
         """
         :param XY: A matrix of polynomialvalues
@@ -36,7 +52,7 @@ class LinReg:
     def set_lasso(self):
         self.regressionmethod = getattr(self, 'lasso')
     """
-
+    @check_types(np.ndarray, np.ndarray) 
     def ols(self, XY = None, z = None):
         """
         Performes a Ordinary least squares linear fit
@@ -58,9 +74,9 @@ class LinReg:
         zpredict = XY @ beta
         varz = 1.0/(XY.shape[0] - self.deg - 1)*np.sum((z - zpredict)**2)
         self.var_ols = np.linalg.pinv(XY.T @ XY)*varz
-
         return beta
 
+    @check_types(np.ndarray, np.ndarray) 
     def ridge(self, XY = None, z = None):
         """
         Performes a Ridge regression linear fit
@@ -88,6 +104,7 @@ class LinReg:
         return beta
 
 
+    @check_types(np.ndarray, np.ndarray)
     def lasso(self, XY = None, z = None):
         """
         Performes a Lasso regression linear fit
@@ -112,7 +129,7 @@ class LinReg:
 
         return beta
 
-
+    @check_types(np.ndarray, np.ndarray)
     def MSE(self, z, zpred):
         """
         Finds the mean squared error of the real data and predicted values
@@ -127,6 +144,7 @@ class LinReg:
         return 1.0/z.shape[0]*np.sum((z - zpred)**2)
 
 
+    @check_types(np.ndarray, np.ndarray)
     def R2(self, z, zpred):
         """
         Finds the R2 error of the real data and predicted values
@@ -143,7 +161,7 @@ class LinReg:
 
         return 1 - np.sum((z - zpred)**2)/np.sum((z - zmean)**2)
 
-
+    @check_types(int, MethodType)
     def bootstrap(self, nBoots, regressionmethod):
         """
         I dont fucking know
@@ -175,6 +193,7 @@ class LinReg:
         print("\nVariance betas after %i resamples: \n" %(nBoots), beta_var)
 
 
+    @check_types(int, MethodType)
     def kfold(self, nfolds, regressionmethod):
         """
         I dont fucking know
@@ -202,3 +221,10 @@ class LinReg:
 
         mse_ave /= nfolds
         print("k-fold average MSE: ", mse_ave)
+    
+    @check_types(int, int, int)
+    def testfunc(self, a, b, c):
+        pass
+
+
+
