@@ -189,8 +189,8 @@ class LinReg:
 
         print("Average MSE after %i resamples: " %(nBoots), self.boot_mse)
         print("Variance of MSE after %i resamples: " %(nBoots), self.boot_var)
-        print("\nAverage betas after %i resamples: \n" %(nBoots), beta_ave)
-        print("\nVariance betas after %i resamples: \n" %(nBoots), beta_var)
+        # print("\nAverage betas after %i resamples: \n" %(nBoots), beta_ave)
+        # print("\nVariance betas after %i resamples: \n" %(nBoots), beta_var)
 
 
     @check_types(int, MethodType)
