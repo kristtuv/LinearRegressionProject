@@ -195,37 +195,28 @@ class LinReg:
 
         return 1 - np.sum((z - zpred)**2)/np.sum((z - zmean)**2)
 
-    @check_types(int, MethodType)
-    def bootstrap(self, nBoots, regressionmethod):
+    #@check_types(int, MethodType)
+    def bootstrap(self, XY, z, nBoots, regressionmethod):
         """
         I dont fucking know
         """
+        N = XY.shape[0]
 
-        boot_mse = np.zeros(nBoots)
-        betas = np.zeros((nBoots, self.XY.shape[1]))
+        zpreds = np.zeros((nBoots, N))
 
         for i in tqdm(range(nBoots)):
-            idx = np.random.choice(self.N, self.N)
-            XY = self.XY[idx]
-            z = self.z[idx]
-            # beta = self.ols(XY, z)
-            beta = regressionmethod(XY, z)
-            betas[i] = beta.flatten()
+            idx = np.random.choice(N, N)
+            XY_boot = XY[idx]
+            z_boot = z[idx]
+
+            beta = regressionmethod(XY_boot, z_boot)
             zpredict = XY @ beta
-            mse = self.MSE(z, zpredict)
-            boot_mse[i] = mse
+            zpreds[i] = zpredict.flatten()
 
-        self.beta_boot = np.average(betas, axis = 0)
-        self.var_boot = np.var(betas, axis = 0)
+        z_avg = np.average(zpreds, axis = 0).reshape(-1, 1)
+        z_var = np.var(zpreds, axis = 0).reshape(-1, 1)
 
-        self.boot_mse = np.average(boot_mse)
-        self.boot_var = np.var(boot_mse)
-
-        print("Average MSE after %i resamples: " %(nBoots), self.boot_mse)
-        print("Variance of MSE after %i resamples: " %(nBoots), self.boot_var)
-        print("\nAverage betas after %i resamples: \n" %(nBoots), self.beta_boot)
-        print("\nVariance betas after %i resamples: \n" %(nBoots), self.var_boot)
-
+        return z_avg, z_var
 
     @check_types(int, MethodType)
     def kfold(self, nfolds, regressionmethod):
