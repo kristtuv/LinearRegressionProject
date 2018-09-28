@@ -5,6 +5,7 @@ from Franke import FrankeFunction
 from sklearn.linear_model import LinearRegression, RidgeCV, Lasso
 from types import  MethodType
 from tqdm import tqdm
+import sys
 
 
 def check_types(*args):
@@ -53,6 +54,38 @@ class LinReg:
     def set_lasso(self):
         self.regressionmethod = getattr(self, 'lasso')
     """
+
+    def split_data(self, folds = None, frac = None, shuffle = False):
+
+        if folds != None and frac != None:
+            print("Error: Both folds and frac given, give only one of them.")
+            sys.exit(0)
+        if folds == None and frac == None:
+            print("Error: No split info received, give either no. folds or fraction.")
+            sys.exit(0)
+
+        XY = self.XY
+        z = self.z
+
+        if shuffle:
+            XY = np.shuffle(XY, axis = 0)
+            z = np.shuffle(z, axis = 0)
+
+        if folds != None:
+            XY_folds = np.array_split(XY, folds, axis = 0)
+            z_folds = np.array_split(z, folds, axis = 0)
+            return XY_folds, z_folds
+
+        elif frac != None:
+            nTest = int(np.floor(frac*XY.shape[0]))
+            XY_Train = XY[:-nTest]
+            XY_Test = XY[-nTest:]
+
+            z_Train = z[:-nTest]
+            z_Test = z[-nTest:]
+            return XY_Train, XY_Test, z_Train, z_Test
+
+
     @check_types(np.ndarray, np.ndarray)
     def ols(self, XY = None, z = None):
         """
@@ -222,6 +255,10 @@ class LinReg:
 
         mse_ave /= nfolds
         print("k-fold average MSE: ", mse_ave)
+
+    #def statistics():
+
+
 
     @check_types(int, int, int)
     def testfunc(self, a, b, c):

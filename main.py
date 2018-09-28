@@ -10,7 +10,7 @@ noise = 0.5*np.random.randn(N, 1)
 z = 2*x**2 + 3*y**2 + noise
 
 a = LinReg(x, y, z, deg)
-
+"""
 beta = a.ols()
 zpredict = a.XY @ beta
 
@@ -27,26 +27,15 @@ print("Model variance: ", model_var)
 print("Model bias: ", model_bias)
 print("Variance + Bias: ", model_var + model_bias, "\n")
 print("Rest: ", rest)
-
-#a.kfold(5, a.ols)
-
-
 """
-a.bootstrap(10000, a.ols)
-print("\nBootstrap MSE: ", a.boot_mse)
 
-zboot = a.XY @ a.beta_boot
-MSE_boot = a.MSE(z, zboot)
+XY_Train, XY_Test, z_Train, z_Test = a.split_data(frac = 0.3)
 
-boot_mean = np.average(zboot)
-boot_var = np.var(zboot)
-boot_bias = 1.0/N*np.sum((z - boot_mean)**2)
+beta = a.ols(XY_Train, z_Train)
+zpred_Train = XY_Train @ beta
+zpred_Test = XY_Test @ beta
 
-print("Boot variance: ", boot_var)
-print("Boot bias: ", boot_bias)
-print("Variance + Bias (Boot): ", boot_var + boot_bias, "\n")
-#print("Rest: ", rest)
-
-#print(model_var + model_bias)
-#print(model_var + model_bias + rest)
-"""
+print("MSE Train: ", a.MSE(z_Train,zpred_Train))
+print("MSE Test:, ", a.MSE(z_Test, zpred_Test))
+print("R2 Train: ", a.R2(z_Train,zpred_Train))
+print("R2 Test: ", a.R2(z_Test, zpred_Test))
