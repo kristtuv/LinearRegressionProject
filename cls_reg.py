@@ -6,6 +6,7 @@ from sklearn.linear_model import LinearRegression, RidgeCV, Lasso
 from types import  MethodType
 from tqdm import tqdm
 import sys
+import matplotlib.pylab as plt
 
 
 def check_types(*args):
@@ -74,7 +75,9 @@ class LinReg:
         if folds != None:
             XY_folds = np.array_split(XY, folds, axis = 0)
             z_folds = np.array_split(z, folds, axis = 0)
-            return XY_folds, z_folds
+
+            self.XY_folds = XY_folds
+            self.z_folds =  z_folds
 
         elif frac != None:
             nTest = int(np.floor(frac*XY.shape[0]))
@@ -83,7 +86,11 @@ class LinReg:
 
             z_Train = z[:-nTest]
             z_Test = z[-nTest:]
-            return XY_Train, XY_Test, z_Train, z_Test
+
+            self.XY_Train = XY_Train
+            self.XY_Test = XY_Test
+            self.z_Train = z_Train
+            self.z_Test = z_Test
 
 
     @check_types(np.ndarray, np.ndarray)
@@ -196,21 +203,22 @@ class LinReg:
         return 1 - np.sum((z - zpred)**2)/np.sum((z - zmean)**2)
 
     #@check_types(int, MethodType)
-    def bootstrap(self, XY, z, nBoots, regressionmethod):
+    def bootstrap(self, nBoots, regressionmethod):
         """
         I dont fucking know
         """
-        N = XY.shape[0]
+        nTrain = self.XY_Train.shape[0]
+        nTest = self.XY_Test.shape[0]
 
-        zpreds = np.zeros((nBoots, N))
+        zpreds = np.zeros((nBoots, nTest))
 
         for i in tqdm(range(nBoots)):
-            idx = np.random.choice(N, N)
-            XY_boot = XY[idx]
-            z_boot = z[idx]
+            idx = np.random.choice(nTrain, nTrain)
+            XY_boot = self.XY_Train[idx]
+            z_boot = self.z_Train[idx]
 
             beta = regressionmethod(XY_boot, z_boot)
-            zpredict = XY @ beta
+            zpredict = self.XY_Test @ beta
             zpreds[i] = zpredict.flatten()
 
         z_avg = np.average(zpreds, axis = 0).reshape(-1, 1)
