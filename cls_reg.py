@@ -4,6 +4,7 @@ from sklearn.preprocessing import PolynomialFeatures
 from Franke import FrankeFunction
 from sklearn.linear_model import LinearRegression, RidgeCV, Lasso
 from types import  MethodType
+from tqdm import tqdm
 
 
 def check_types(*args):
@@ -52,7 +53,7 @@ class LinReg:
     def set_lasso(self):
         self.regressionmethod = getattr(self, 'lasso')
     """
-    @check_types(np.ndarray, np.ndarray) 
+    @check_types(np.ndarray, np.ndarray)
     def ols(self, XY = None, z = None):
         """
         Performes a Ordinary least squares linear fit
@@ -76,7 +77,7 @@ class LinReg:
         self.var_ols = np.linalg.pinv(XY.T @ XY)*varz
         return beta
 
-    @check_types(np.ndarray, np.ndarray) 
+    @check_types(np.ndarray, np.ndarray)
     def ridge(self, XY = None, z = None):
         """
         Performes a Ridge regression linear fit
@@ -170,7 +171,7 @@ class LinReg:
         boot_mse = np.zeros(nBoots)
         betas = np.zeros((nBoots, self.XY.shape[1]))
 
-        for i in range(nBoots):
+        for i in tqdm(range(nBoots)):
             idx = np.random.choice(self.N, self.N)
             XY = self.XY[idx]
             z = self.z[idx]
@@ -181,16 +182,16 @@ class LinReg:
             mse = self.MSE(z, zpredict)
             boot_mse[i] = mse
 
-        beta_ave = np.average(betas, axis = 0)
-        beta_var = np.var(betas, axis = 0)
+        self.beta_boot = np.average(betas, axis = 0)
+        self.var_boot = np.var(betas, axis = 0)
 
         self.boot_mse = np.average(boot_mse)
         self.boot_var = np.var(boot_mse)
 
         print("Average MSE after %i resamples: " %(nBoots), self.boot_mse)
         print("Variance of MSE after %i resamples: " %(nBoots), self.boot_var)
-        # print("\nAverage betas after %i resamples: \n" %(nBoots), beta_ave)
-        # print("\nVariance betas after %i resamples: \n" %(nBoots), beta_var)
+        print("\nAverage betas after %i resamples: \n" %(nBoots), self.beta_boot)
+        print("\nVariance betas after %i resamples: \n" %(nBoots), self.var_boot)
 
 
     @check_types(int, MethodType)
@@ -221,10 +222,7 @@ class LinReg:
 
         mse_ave /= nfolds
         print("k-fold average MSE: ", mse_ave)
-    
+
     @check_types(int, int, int)
     def testfunc(self, a, b, c):
         pass
-
-
-
