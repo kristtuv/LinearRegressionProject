@@ -220,11 +220,11 @@ class LinReg:
             z_boot = self.z_Train[idx]
 
             beta = regressionmethod(XY_boot, z_boot)
-            zpred_train = self.XY_Train @ beta
+            zpred_train = XY_boot @ beta
             zpred_test = self.XY_Test @ beta
 
             zpreds[i] = zpred_test.flatten()
-            train_errors[i] = self.MSE(self.z_Train, zpred_train)
+            train_errors[i] = self.MSE(z_boot, zpred_train)
             test_errors[i] = self.MSE(self.z_Test, zpred_test)
 
         train_error = np.average(train_errors)
@@ -240,11 +240,13 @@ class LinReg:
         """
         I dont fucking know
         """
+        self.split_data(folds = nfolds)
 
+        XY_folds = self.XY_folds
+        z_folds = self.z_folds
 
-        XY_folds = np.array_split(self.XY, nfolds, axis = 0)
-        z_folds = np.array_split(self.z, nfolds, axis = 0)
-        mse_ave = 0
+        mse_train = 0; mse_test = 0
+        r2_train = 0; r2_test = 0
 
         for i in range(nfolds):
 
@@ -257,14 +259,18 @@ class LinReg:
             Z_Train = np.concatenate(Z_Train)
 
             beta = regressionmethod(XY_Train, Z_Train)
-            zpredict = XY_Test @ beta
-            mse = self.MSE(Z_Test, zpredict)
-            mse_ave += mse
+            zpred_train = XY_Train @ beta
+            zpred_test = XY_Test @ beta
 
-        mse_ave /= nfolds
-        print("k-fold average MSE: ", mse_ave)
+            mse_train += self.MSE(Z_Train, zpred_train)
+            mse_test += self.MSE(Z_Test, zpred_test)
+            r2_train += self.R2(Z_Train, zpred_train)
+            r2_test += self.R2(Z_Test, zpred_test)
 
-    #def statistics():
+        mse_train /= nfolds; mse_test /= nfolds
+        r2_train /= nfolds; r2_test /= nfolds
+
+        return mse_train, mse_test, r2_train, r2_test
 
 
 
