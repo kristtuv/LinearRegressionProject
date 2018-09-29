@@ -211,6 +211,8 @@ class LinReg:
         nTest = self.XY_Test.shape[0]
 
         zpreds = np.zeros((nBoots, nTest))
+        train_errors = np.zeros(nBoots)
+        test_errors = np.zeros(nBoots)
 
         for i in tqdm(range(nBoots)):
             idx = np.random.choice(nTrain, nTrain)
@@ -218,13 +220,20 @@ class LinReg:
             z_boot = self.z_Train[idx]
 
             beta = regressionmethod(XY_boot, z_boot)
-            zpredict = self.XY_Test @ beta
-            zpreds[i] = zpredict.flatten()
+            zpred_train = self.XY_Train @ beta
+            zpred_test = self.XY_Test @ beta
+
+            zpreds[i] = zpred_test.flatten()
+            train_errors[i] = self.MSE(self.z_Train, zpred_train)
+            test_errors[i] = self.MSE(self.z_Test, zpred_test)
+
+        train_error = np.average(train_errors)
+        test_error = np.average(test_errors)
 
         z_avg = np.average(zpreds, axis = 0).reshape(-1, 1)
         z_var = np.var(zpreds, axis = 0).reshape(-1, 1)
 
-        return z_avg, z_var
+        return z_avg, z_var, train_error, test_error
 
     @check_types(int, MethodType)
     def kfold(self, nfolds, regressionmethod):
