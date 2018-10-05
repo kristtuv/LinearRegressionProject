@@ -44,7 +44,7 @@ def CV_models(x, y, z, degrees, nfolds, regressionmethod, lambdas=[0]):
                 del best_models[nbest]
 
             print("|%8i|%8g|%11f|%10f|%10f|%10f|" % (deg, lambdas[i], mse_train, mse_test, r2_train, r2_test))
-        """
+
         plt.plot(np.log10(lambdas), mse_Train, label="MSE Train")
         plt.plot(np.log10(lambdas), mse_Test, label="MSE Test")
         plt.xlabel(r"$log_{10}\lambda$")
@@ -52,25 +52,25 @@ def CV_models(x, y, z, degrees, nfolds, regressionmethod, lambdas=[0]):
         plt.title("Ridge regression, polynomial deg: %i" % deg)
         plt.legend()
         plt.show()
-        """
+
         print("-"*64)
 
 
 N = 100
 nfolds = 10
-degrees = range(2, 8)
+degrees = range(2, 11)
 nbest = 10
 
 x = np.random.uniform(0, 1, (N, 1))
 y = np.random.uniform(0, 1, (N, 1))
-noise = 0.2*np.random.randn(N, 1)
+noise = 0.5*np.random.randn(N, 1)
 var_noise = np.var(noise)
 #z = 2*x**2 + 3*y**2 + noise
-#z = FrankeFunction(x, y) + noise
-z = x**5 + y**5 + noise
+z = FrankeFunction(x, y) + noise
+#z = x**5 + y**5 + noise
 
-lambdas_ridge = [10**i for i in range(-3, 2)]
-lambdas_lasso = [10**i for i in range(-5, 0)]
+lambdas_ridge = [10**i for i in range(-3, 3)]
+lambdas_lasso = [10**i for i in range(-5, 1)]
 
 best_models = [[]]*nbest
 best_models_err = np.array([-10000]*nbest, dtype=np.float)

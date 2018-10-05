@@ -41,20 +41,16 @@ class LinReg:
         self.N = x.shape[0]
         self.lamb = 0.1
 
-        xy = np.append(x, y, axis=1)
-        poly = PolynomialFeatures(degree = deg)
-        self.XY = poly.fit_transform(xy)
-    """
-    @property
-    def set_ols(self):
-        self.regressionmethod = getattr(self, 'ols')
-    @property
-    def set_ridge(self):
-        self.regressionmethod = getattr(self, 'ridge')
-    @property
-    def set_lasso(self):
-        self.regressionmethod = getattr(self, 'lasso')
-    """
+        nterms = np.sum(range(1, deg+2))
+        self.XY = np.zeros((self.N, nterms))
+        
+        count = 0
+        for i in range(deg+1):
+            for j in range(i+1):
+
+                self.XY[:,count] = (x**(i-j)*y**(j)).flatten()
+                count += 1
+
 
     def split_data(self, folds = None, frac = None, shuffle = False):
 

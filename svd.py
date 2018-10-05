@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pylab as plt
 from sklearn.linear_model import LinearRegression
 import scipy.linalg as scl
 
@@ -19,8 +18,8 @@ zpred_inv = X @ beta_inv
 
 
 beta_svd = np.linalg.pinv(X) @ z
-zpred_svd = X @ beta_svd
 print("\nbeta svd : \n", beta_svd)
+zpred_svd = X @ beta_svd
 
 
 linreg.fit(X, z)
@@ -34,3 +33,5 @@ mse_sk = 1/N*np.sum((zpred_sk - z)**2)
 print("\nMSE inv: ", mse_inv)
 print("MSE SVD: ", mse_svd)
 print("MSE SCIKIT: ", mse_sk)
+
+print(scl.inv(X.T @ X))
