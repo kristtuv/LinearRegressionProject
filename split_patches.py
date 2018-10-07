@@ -1,5 +1,5 @@
 import numpy as np
-def split_patches(self, x, y, z, colsplit, rowsplit, choose_patches):
+def split_patches(x, y, z, colsplit, rowsplit, choose_patches):
     """
     param: colsplit: How many column(c) do you want the data split into
     param: rowsplit: How many rows(r) do you want the data split into
@@ -13,7 +13,6 @@ def split_patches(self, x, y, z, colsplit, rowsplit, choose_patches):
     """
 
     x,y = np.meshgrid(x,y)
-
     ###Spliting
     ###The
     ###Data
@@ -34,7 +33,7 @@ def split_patches(self, x, y, z, colsplit, rowsplit, choose_patches):
         b = np.random.choice(rowsplit)
         randomset.append((a,b))
 
-    self.z = np.concatenate([zsplit[randset[0]][randset[1]].reshape(-1,1) for randset in randomset])
-    self.x = np.concatenate([xsplit[randset[0]][randset[1]].reshape(-1,1) for randset in randomset])
-    self.y = np.concatenate([ysplit[randset[0]][randset[1]].reshape(-1,1) for randset in randomset])
+    z = np.concatenate([zsplit[randset[0]][randset[1]].reshape(-1,1) for randset in randomset])
+    x = np.concatenate([xsplit[randset[0]][randset[1]].reshape(-1,1) for randset in randomset])
+    y = np.concatenate([ysplit[randset[0]][randset[1]].reshape(-1,1) for randset in randomset])
     return x, y, z
