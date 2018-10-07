@@ -43,7 +43,7 @@ class LinReg:
 
         nterms = np.sum(range(1, deg+2))
         self.XY = np.zeros((self.N, nterms))
-        
+
         count = 0
         for i in range(deg+1):
             for j in range(i+1):
@@ -51,12 +51,11 @@ class LinReg:
                 self.XY[:,count] = (x**(i-j)*y**(j)).flatten()
                 count += 1
 
+        self.split_data(folds = 10, frac = 0.3)
+
 
     def split_data(self, folds = None, frac = None, shuffle = False):
 
-        if folds != None and frac != None:
-            print("Error: Both folds and frac given, give only one of them.")
-            sys.exit(0)
         if folds == None and frac == None:
             print("Error: No split info received, give either no. folds or fraction.")
             sys.exit(0)
@@ -75,7 +74,7 @@ class LinReg:
             self.XY_folds = XY_folds
             self.z_folds =  z_folds
 
-        elif frac != None:
+        if frac != None:
             nTest = int(np.floor(frac*XY.shape[0]))
             XY_Train = XY[:-nTest]
             XY_Test = XY[-nTest:]
@@ -132,11 +131,17 @@ class LinReg:
         if z is None: z = self.z
 
         I = np.identity(XY.shape[1])
-        #beta = scl.inv(XY.T @ XY + self.lamb*I) @ XY.T @ z
-
+        XY_inv = scl.inv(XY.T @ XY + self.lamb*I)
+        beta = XY_inv @ XY.T @ z
+        """
         U, s, Vt = scl.svd(XY, full_matrices=False)
         d = (s/(s **2 + self.lamb)).reshape(XY.shape[1], 1)
         beta = Vt.T @ (d * U.T @ z)
+        """
+        zpredict = XY @ beta
+        varz = 1.0/(XY.shape[0] - self.deg - 1)*np.sum((z - zpredict)**2)
+
+        self.var_ridge = XY_inv @ XY.T @ XY @ XY_inv.T * varz
 
         return beta
 
@@ -227,9 +232,10 @@ class LinReg:
         test_error = np.average(test_errors)
 
         z_avg = np.average(zpreds, axis = 0).reshape(-1, 1)
-        z_var = np.var(zpreds, axis = 0).reshape(-1, 1)
+        variance = np.average(np.var(zpreds, axis = 0))
+        bias = np.average((self.z_Test - z_avg)**2)
 
-        return z_avg, z_var, train_error, test_error
+        return bias, variance, train_error, test_error
 
     @check_types(int, MethodType)
     def kfold(self, nfolds, regressionmethod):
