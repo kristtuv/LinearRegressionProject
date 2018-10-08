@@ -13,16 +13,30 @@ imageio         2.3.0
 
 ## Structure of the repo
 ### Documentation
-The documents
+The documentation of class Lin_Reg contained in cls_reg.py was generated using sphinx.  
+View documentation by opening index.html file  
+
+
 ### Src 
-unit_test.py: A few tests to make sure cls_reg class is working
+unit_test.py: A few tests to make sure Lin_Reg class is working   
+Franke.py: Generating data from franke function. Also plot if explicitly run   
+CV.py: Running cross validation and bootstrap on franke function   
+CV_terrain.py: Running crossvalidation and bootstrap on real data   
+cls_reg.py: Class containing linear regression methods ols, ridge and lasso; resampling k-fold and bootstrap; statistics MSE and R2  
+ols.py
+lasso.py
+ridge.py
+run_real_data.py: Generating plots of mse vs degree and mse vs  
+split_patches.py: Used to split terrain data into random patches of a given size
 
 
-
-The misc_programs directory contains programs used to genrate example plots
+misc_programs: directory contains programs used to generate example plots
 
 ### Data
+Contains different terrain data. SRTM_data_Norway_1.tif has been used in this project
+
 ### Plots
+Folder of plots generated. Several not used directly in the project.
 
 
 
@@ -31,25 +45,8 @@ Give examples
 ```
 
 ## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
+Run unit_test.py with pytest -v  
+pytest unitest.py -v
 
 
 
