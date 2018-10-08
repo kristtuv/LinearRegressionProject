@@ -1,0 +1,112 @@
+import numpy as np
+from cls_reg import LinReg
+from Franke import FrankeFunction
+import matplotlib.pylab as plt
+import plotparams
+from split_patches import split_patches
+from imageio import imread
+import time
+
+def CV_models(x, y, z, degrees, nfolds, regressionmethod, lambdas=[0], plot= False):
+
+    mse_Train = np.zeros(len(lambdas))
+    mse_Test = np.zeros(len(lambdas))
+    r2_Train = np.zeros(len(lambdas))
+    r2_Test = np.zeros(len(lambdas))
+
+    #method = str(regrssionmethod).split(".")[1]
+
+    print("\n\n%s REGRESSION:\n" %(regressionmethod.upper()))
+    print("="*60)
+    print("\n| Degree | Lambda | MSE Train | MSE Test | R2 Train | R2 Test |")
+    print("-"*60)
+
+    for deg in degrees:
+
+        a = LinReg(x, y, z, deg)
+        method = getattr(a, regressionmethod)
+
+        for i in range(len(lambdas)):
+
+            a.lamb = lambdas[i]
+
+            mse_train, mse_test, r2_train, r2_test = a.kfold(10, method)
+
+            mse_Train[i] = mse_train
+            mse_Test[i] = mse_test
+            r2_Train[i] = r2_train
+            r2_Test[i] = r2_test
+
+            #err_diff = r2_test - mse_test
+            err_diff = 1 - mse_test
+
+            if np.any(best_models_err < err_diff):
+                idx = np.argmax(best_models_err < err_diff)
+                best_models_err[:] = np.insert(best_models_err, idx, err_diff)[:nbest]
+                best_models.insert(idx, [regressionmethod.capitalize(), deg, lambdas[i], mse_test, r2_test])
+                del best_models[nbest]
+
+            print("|%8i|%8g|%11f|%10f|%10f|%10f|" % (deg, lambdas[i], mse_train, mse_test, r2_train, r2_test))
+
+        if plot:
+            plt.plot(np.log10(lambdas), mse_Train, label="MSE Train")
+            plt.plot(np.log10(lambdas), mse_Test, label="MSE Test")
+            plt.xlabel(r"$log_{10}\lambda$")
+            plt.ylabel("Mean Squared Error")
+            plt.title("Ridge regression, polynomial deg: %i" % deg)
+            plt.legend()
+            plt.show()
+
+        print("-"*64)
+
+
+nfolds = 5 
+degrees = range(8)
+nbest = 10
+
+z = imread('data/SRTM_data_Norway_2.tif')[:-1, :-1]
+z = z/np.max(z)
+x = np.linspace(0,1, z.shape[0])
+y = np.linspace(0,1, z.shape[1])
+
+
+start = time.time()
+num_patches = 5 
+x, y, z = split_patches(x, y, z, 36, 18, num_patches)
+stop = time.time()
+print('Split patches time: ', stop - start)
+
+lambdas_ridge = [10**i for i in range(-3, 3)]
+lambdas_lasso = [10**i for i in range(-5, 1)]
+
+best_models = [[]]*nbest
+best_models_err = np.array([-10000]*nbest, dtype=np.float)
+
+CV_models(x, y, z, degrees, nfolds, "ols")
+CV_models(x, y, z, degrees, nfolds, "ridge", lambdas_ridge)
+CV_models(x, y, z, degrees, nfolds, "lasso", lambdas_lasso)
+
+print("\nBootstrapping best models:")
+for i in range(nbest):
+
+    model = LinReg(x, y, z, best_models[i][1])
+    model.lamb = best_models[i][2]
+    method = getattr(model, best_models[i][0].lower())
+    bias, variance, train_error, test_error = model.bootstrap(100, method)
+
+    #beta = method(model.XY_Train, model.z_Train)
+    #zpred_Train = model.XY_Train @ beta
+    #zpred_Test = model.XY_Test @ beta
+    #MSE = model.MSE(model.z_Test, zpred_Test)
+
+    best_models[i].extend([bias, variance, test_error])
+
+
+print("\n\n Best Models:")
+print("="*75)
+print("     Method | Degree | lambda | MSE Test | R2 Test  |   Bias   | Variance | MSE Bootstrap|")
+print("-"*75)
+for i in range(nbest):
+    #print("%i." % (i+1), " | ".join(map(lambda x: str(x)[:8], best_models[i])))
+    print("%3i:%8s|%8i|%8g|%10g|%10f|%10f|%10f|%10f|" % (tuple([i+1] + best_models[i])))
+
