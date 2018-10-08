@@ -2,18 +2,25 @@
 This is a project comparing the popular linear regression methods Ordinary Least Squares, Ridge and Lasso Regression. All the methods are evaluated first on the famous Franke function, and then on real data from https://earthexplorer.usgs.gov/.
 
 ## Build with
-scikit-image    0.13.1\\
-scikit-learn    0.19.2
+scikit-image    0.13.1  
+scikit-learn    0.19.2  
 pytest          3.2.1   
-python          3.6.2
-numpy           1.13.3
-matplotlib      2.0.2 
-tqdm            4.23.4
-imageio         2.3.0
+python          3.6.2  
+numpy           1.13.3  
+matplotlib      2.0.2   
+tqdm            4.23.4      
+imageio         2.3.0   
 
 ## Structure of the repo
 ### Documentation
-### Code
+The documents
+### Src 
+unit_test.py: A few tests to make sure cls_reg class is working
+
+
+
+The misc_programs directory contains programs used to genrate example plots
+
 ### Data
 ### Plots
 
