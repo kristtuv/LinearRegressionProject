@@ -2,7 +2,7 @@
 This is a project comparing the popular linear regression methods Ordinary Least Squares, Ridge and Lasso Regression. All the methods are evaluated first on the famous Franke function, and then on real data from https://earthexplorer.usgs.gov/.
 
 ## Build with
-scikit-image    0.13.1
+scikit-image    0.13.1\\
 scikit-learn    0.19.2
 pytest          3.2.1   
 python          3.6.2
