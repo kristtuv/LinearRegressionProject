@@ -1,3 +1,12 @@
+"""
+Nasty program for generating a plot
+showing the normal distribution-ish
+of the bootstrap as nBoots increases
+"""
+import sys
+sys.path.append('../../')
+sys.path.append('../')
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression

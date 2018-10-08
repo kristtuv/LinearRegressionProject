@@ -1,3 +1,8 @@
+"""
+Ploting mse bias variance decomosition
+for OLS
+"""
+
 import numpy as np
 from cls_reg import LinReg
 from Franke import FrankeFunction

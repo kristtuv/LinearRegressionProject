@@ -1,3 +1,11 @@
+"""
+One plot to rule them all
+One plot to find them
+One plot to bring them all
+And in the darkness bind them
+"""
+
+
 import matplotlib.pyplot as plt
 
 plt.style.use('ggplot')

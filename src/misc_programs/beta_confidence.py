@@ -1,3 +1,10 @@
+"""
+Generating beta plots with 
+confidence intervals
+"""
+import sys
+sys.path.append('../../')
+sys.path.append('../')
 import numpy as np
 from cls_reg import LinReg
 from Franke import FrankeFunction
@@ -35,7 +42,7 @@ for deg in [2, 5]:
         ax.set_title(r'Deg: %i, $\sigma$ = %g' %(deg, sigma))
         ax.set_xlabel('j')
         ax.set_ylabel(r'$\beta_j$')
-        plt.savefig('plots/conf_ols'+str(deg)+noisy+'.png')
+        # plt.savefig('plots/conf_ols'+str(deg)+noisy+'.png')
         plt.show()
 
 """

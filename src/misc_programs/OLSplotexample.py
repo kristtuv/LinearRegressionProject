@@ -1,6 +1,10 @@
 """
 Nasty program for demonstrating RSS
 """
+import sys
+sys.path.append('../../')
+sys.path.append('../')
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
