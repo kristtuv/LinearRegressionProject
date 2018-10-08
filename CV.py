@@ -50,21 +50,21 @@ def CV_models(x, y, z, degrees, nfolds, regressionmethod, lambdas=[0], plot= Fal
             plt.plot(np.log10(lambdas), mse_Test, label="MSE Test")
             plt.xlabel(r"$log_{10}\lambda$")
             plt.ylabel("Mean Squared Error")
-            plt.title("Ridge regression, polynomial deg: %i" % deg)
+            plt.title("%s regression, polynomial deg: %i" % (regressionmethod.capitalize(), deg))
             plt.legend()
             plt.show()
 
         print("-"*64)
 
 
-N = 10000
+N = 1000
 nfolds = 10
-degrees = range(6)
-nbest = 10
+degrees = range(10)
+nbest = 15
 
 x = np.random.uniform(0, 1, (N, 1))
 y = np.random.uniform(0, 1, (N, 1))
-noise = 0*np.random.randn(N, 1)
+noise = 0.3*np.random.randn(N, 1)
 var_noise = np.var(noise)
 #z = 2*x**2 + 3*y**2 + noise
 z = FrankeFunction(x, y) + noise
@@ -88,11 +88,6 @@ for i in range(nbest):
     method = getattr(model, best_models[i][0].lower())
     bias, variance, train_error, test_error = model.bootstrap(100, method)
 
-    #beta = method(model.XY_Train, model.z_Train)
-    #zpred_Train = model.XY_Train @ beta
-    #zpred_Test = model.XY_Test @ beta
-    #MSE = model.MSE(model.z_Test, zpred_Test)
-
     best_models[i].extend([bias, variance, test_error])
 
 
@@ -101,5 +96,6 @@ print("="*75)
 print("     Method | Degree | lambda | MSE Test | R2 Test  |   Bias   | Variance | MSE Bootstrap|")
 print("-"*75)
 for i in range(nbest):
-    #print("%i." % (i+1), " | ".join(map(lambda x: str(x)[:8], best_models[i])))
     print("%3i:%8s|%8i|%8g|%10g|%10f|%10f|%10f|%10f|" % (tuple([i+1] + best_models[i])))
+
+#print("\nVariance of noise: ", var_noise)
