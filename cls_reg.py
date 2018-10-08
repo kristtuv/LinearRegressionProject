@@ -10,6 +10,9 @@ import matplotlib.pylab as plt
 
 
 def check_types(*args):
+    """
+    Decorator for checking types of function arguments
+    """
     def decorator(func):
         def wrapper(*argswrapper):
             argswrappercopy = (argswrapper[1:])
@@ -26,11 +29,13 @@ class LinReg:
     @check_types(np.ndarray, np.ndarray, np.ndarray, int)
     def __init__(self, x, y, z, deg):
         """
-        :param XY: A matrix of polynomialvalues
+        :param x: 1darray of x values
+        :param y: 1darray of y values
         :param z: The values we are trying to fit
         :param deg: The degree of polynomial we try to fit the data
-        :type XY: array
-        :type z: array
+        :type x: ndarray
+        :type y: ndarray
+        :type z: ndarray
         :type deg: int
         """
 
@@ -43,7 +48,11 @@ class LinReg:
 
         nterms = np.sum(range(1, deg+2))
         self.XY = np.zeros((self.N, nterms))
+        
 
+        ####################
+        #Calculating the design matrix
+        ####################
         count = 0
         for i in range(deg+1):
             for j in range(i+1):
@@ -55,6 +64,16 @@ class LinReg:
 
 
     def split_data(self, folds = None, frac = None, shuffle = False):
+        """
+        Splits the data into training and test. Give either frac or folds
+        param: folds: Number of folds
+        param: frac: Fraction of data to be test data
+        param: shuffle: If True: shuffles the design matrix 
+        type: folds: int
+        type: frac: float
+        type: shuffle: Bool
+        return: None
+        """
 
         if folds == None and frac == None:
             print("Error: No split info received, give either no. folds or fraction.")
@@ -121,10 +140,8 @@ class LinReg:
 
         :param XY: A matrix of polynomialvalues
         :param z: The values we are trying to fit
-        :param lamb: The regularization constant
         :type XY: array
         :type z: array
-        :type lamb: float, int
         :return: The coefficient of the fitted polynomial
         :rtype: array
         """
@@ -156,10 +173,8 @@ class LinReg:
 
         :param XY: A matrix of polynomialvalues
         :param z: The values we are trying to fit
-        :param lamb: The regularization constant
         :type XY: array
         :type z: array
-        :type lamb: float, int
         :return: The coefficient of the fitted polynomial
         :rtype: array
         """
@@ -209,7 +224,15 @@ class LinReg:
     #@check_types(int, MethodType)
     def bootstrap(self, nBoots, regressionmethod):
         """
-        I dont fucking know
+        Bootstraps the data defined in the instance
+        and calculates the bias, variance, and average 
+        mse training error and mse test error
+        param: nBoots: Number of boostrap samples
+        param: regressionmethod: ols, ridge or lasso
+        type: nBoots: int
+        type: regressionmethod: MethodType
+        return: Bias, Variance, Training Error, Test Error
+        rtype: float, float, float, float
         """
         nTrain = self.XY_Train.shape[0]
         nTest = self.XY_Test.shape[0]
@@ -243,7 +266,15 @@ class LinReg:
     @check_types(int, MethodType)
     def kfold(self, nfolds, regressionmethod):
         """
-        I dont fucking know
+        Split data into folds and run k-fold algorithm
+        and calculate average r2 and mse error for 
+        for training and test
+        param: nfolds: number of folds
+        type: nfolds: int
+        param: regressionmethod: ols, ridge or lasso
+        type: regressionmethod: MethodType
+        return: mse_train, mse_test, r2_train, r2_test
+        rtype: float, float, float, float
         """
         if nfolds != 10:
             self.split_data(folds = nfolds)
@@ -279,7 +310,3 @@ class LinReg:
         return mse_train, mse_test, r2_train, r2_test
 
 
-
-    @check_types(int, int, int)
-    def testfunc(self, a, b, c):
-        pass

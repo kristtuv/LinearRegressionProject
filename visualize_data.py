@@ -1,3 +1,7 @@
+"""
+Visualize terrain data
+"""
+
 import numpy as np
 from imageio import imread
 import matplotlib.pyplot as plt

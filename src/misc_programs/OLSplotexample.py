@@ -1,3 +1,6 @@
+"""
+Nasty program for demonstrating RSS
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
@@ -23,6 +26,6 @@ ax.plot(x, y, 'o', label='TrainingData', color='green')
 ax.errorbar(x, ypredict, yerr=[0*e,e], label='Fitted line with error', color='yellow', ecolor='red')
 ax.legend()
 plt.tight_layout()
-plt.savefig('plots/OLS_RSS_example.png')
+# plt.savefig('plots/OLS_RSS_example.png')
 plt.show()
 

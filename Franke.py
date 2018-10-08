@@ -1,3 +1,7 @@
+"""
+Run to visualize the franke function
+"""
+
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from matplotlib import cm
@@ -5,11 +9,16 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter
 import numpy as np
 from random import random, seed
 
-np.set_printoptions(linewidth=np.nan)
-
-
-
 def FrankeFunction(x,y):
+    """
+    A function calculatin the franke function. X and Y should be between
+    0 and 1 for the function to make sense.
+    param: x: array between 0 and 1
+    param: y: array between 0 and 1
+    type: x: 1darray
+    type: x: 1darray
+    return: z (1darray)
+    """
     term1 = 0.75*np.exp(-(0.25*(9*x-2)**2) - 0.25*((9*y-2)**2))
     term2 = 0.75*np.exp(-((9*x+1)**2)/49.0 - 0.1*(9*y+1))
     term3 = 0.5*np.exp(-(9*x-7)**2/4.0 - 0.25*((9*y-3)**2))
