@@ -23,6 +23,8 @@ def CV_models(x, y, z, degrees, nfolds, regressionmethod, lambdas=[0], plot= Fal
         a = LinReg(x, y, z, deg)
         method = getattr(a, regressionmethod)
 
+        best_mse = 100000
+
         for i in range(len(lambdas)):
 
             a.lamb = lambdas[i]
@@ -35,6 +37,8 @@ def CV_models(x, y, z, degrees, nfolds, regressionmethod, lambdas=[0], plot= Fal
             r2_Test[i] = r2_test
 
 
+
+            """
             #err_diff = r2_test - mse_test
             err_diff = 1 - mse_test
 
@@ -43,7 +47,22 @@ def CV_models(x, y, z, degrees, nfolds, regressionmethod, lambdas=[0], plot= Fal
                 best_models_err[:] = np.insert(best_models_err, idx, err_diff)[:nbest]
                 best_models.insert(idx, [regressionmethod.capitalize(), deg, lambdas[i], mse_test, r2_test])
                 del best_models[nbest]
+            """
 
+            #===========================
+            if regressionmethod == "ridge":
+                idx = np.argwhere(degrees == deg)
+                if mse_test < best_mse:
+                    best_ridge[idx] = lambdas[i]
+                    best_mse = mse_test
+
+            elif regressionmethod == "lasso":
+                idx = np.argwhere(degrees == deg)
+                if mse_test < best_mse:
+                    best_lasso[idx] = lambdas[i]
+                    best_mse = mse_test
+
+            #============================
 
             print("|%8i|%8g|%11f|%10f|%10f|%10f|" % (deg, lambdas[i], mse_train, mse_test, r2_train, r2_test))
 
@@ -66,7 +85,7 @@ nbest = 15
 
 x = np.random.uniform(0, 1, (N, 1))
 y = np.random.uniform(0, 1, (N, 1))
-noise = 0.3*np.random.randn(N, 1)
+noise = 0.5*np.random.randn(N, 1)
 var_noise = np.var(noise)
 #z = 2*x**2 + 3*y**2 + noise
 z = FrankeFunction(x, y) + noise
@@ -75,14 +94,21 @@ z = FrankeFunction(x, y) + noise
 lambdas_ridge = [10**i for i in range(-3, 3)]
 lambdas_lasso = [10**i for i in range(-5, 1)]
 
-best_models = [[]]*nbest
-best_models_err = np.array([-10000]*nbest, dtype=np.float)
+#best_models = [[]]*nbest
+#best_models_err = np.array([-10000]*nbest, dtype=np.float)
+best_ridge = np.zeros((len(degrees), 1))
+best_lasso = np.zeros((len(degrees), 1))
 
 CV_models(x, y, z, degrees, nfolds, "ols")
 CV_models(x, y, z, degrees, nfolds, "ridge", lambdas_ridge)
 CV_models(x, y, z, degrees, nfolds, "lasso", lambdas_lasso)
 
+print("\nBootstrapping best models:")
+for m
+for i in range(degrees):
 
+
+"""
 print("\nBootstrapping best models:")
 for i in range(nbest):
 
@@ -102,3 +128,4 @@ for i in range(nbest):
     print("%3i:%8s|%8i|%8g|%10g|%10f|%10f|%10f|%10f|" % (tuple([i+1] + best_models[i])))
 
 #print("\nVariance of noise: ", var_noise)
+"""
