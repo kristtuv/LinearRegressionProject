@@ -109,7 +109,9 @@ class LinReg:
 
         zpredict = XY @ beta
         varz = 1.0/(XY.shape[0] - self.deg - 1)*np.sum((z - zpredict)**2)
-        self.var_ols = np.linalg.pinv(XY.T @ XY)*varz
+        var = np.linalg.pinv(XY.T @ XY)*varz
+        self.var_ols = var
+        self.conf_ols = 1.96*np.sqrt(np.diag(var))
         return beta
 
     @check_types(np.ndarray, np.ndarray)
@@ -141,8 +143,9 @@ class LinReg:
         zpredict = XY @ beta
         varz = 1.0/(XY.shape[0] - self.deg - 1)*np.sum((z - zpredict)**2)
 
-        self.var_ridge = XY_inv @ XY.T @ XY @ XY_inv.T * varz
-
+        var = XY_inv @ XY.T @ XY @ XY_inv.T * varz
+        self.var_ridge = var
+        self.conf_ridge = 1.96*np.sqrt(np.diag(var))
         return beta
 
 
@@ -164,7 +167,7 @@ class LinReg:
         if XY is None: XY = self.XY
         if z is None: z = self.z
 
-        lass = Lasso([float(self.lamb)], fit_intercept=False)
+        lass = Lasso([float(self.lamb)], fit_intercept=False, max_iter = 5000)
         lass.fit(XY, z)
 
         beta = (lass.coef_).reshape(XY.shape[1], 1)
@@ -242,7 +245,8 @@ class LinReg:
         """
         I dont fucking know
         """
-        self.split_data(folds = nfolds)
+        if nfolds != 10:
+            self.split_data(folds = nfolds)
 
         XY_folds = self.XY_folds
         z_folds = self.z_folds

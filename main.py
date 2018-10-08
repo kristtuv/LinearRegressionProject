@@ -4,17 +4,17 @@ from Franke import FrankeFunction
 import matplotlib.pylab as plt
 import plotparams
 
-N = 100
-degrees = range(13)
+N = 1000
+degrees = range(11)
 
 x = np.random.uniform(0, 1, (N, 1))
 y = np.random.uniform(0, 1, (N, 1))
-noise = 0.8*np.random.randn(N, 1)
+noise = 0.5*np.random.randn(N, 1)
 var_noise = np.var(noise)
 #z = 2*x**2 + 3*y**2 + noise
-#z = FrankeFunction(x, y) + noise
+z = FrankeFunction(x, y) + noise
 #z_true = x**8 + y**6
-z = x**4 + x**3*y + noise
+#z = x**4 + x**3*y + noise
 
 mse_Train = np.zeros(len(degrees))
 mse_Test = np.zeros(len(degrees))
@@ -34,15 +34,15 @@ for i in range(len(degrees)):
     XY_Train = a.XY_Train ; XY_Test = a.XY_Test
     z_Train = a.z_Train ; z_Test = a.z_Test
 
-    z_avg, z_var, train_error, test_error = a.bootstrap(1000, a.ols)
+    bias, variance, train_error, test_error = a.bootstrap(1000, a.ols)
 
     beta = a.ols(XY_Train, z_Train)
     zpred_Train = XY_Train @ beta
     zpred_Test = XY_Test @ beta
 
     #bias_Train[i] = np.average(z_Train - z_avg)**2
-    bias_Test[i] = np.average((z_Test - z_avg)**2)
-    var[i] = np.average(z_var)
+    bias_Test[i] = bias
+    var[i] = variance
 
     #mse_Train[i] = a.MSE(z_Train,zpred_Train)
     #mse_Test[i] = a.MSE(z_Test, zpred_Test)
@@ -71,6 +71,8 @@ plt.legend()
 plt.show()
 
 plt.plot(degrees, bias_Test, label="Test Bias")
+plt.xlabel("Complexity")
+plt.ylabel("Bias")
 #plt.plot(degrees, bias_Test, label="Test Bias")
 #plt.ylim([0, 1])
 plt.legend()
@@ -78,13 +80,17 @@ plt.show()
 
 #plt.plot(degrees, var_Train, label="Train Variance")
 plt.plot(degrees, var, label="Variance")
+plt.xlabel("Complextiy")
+plt.ylabel("Var")
 #plt.ylim([0, 1])
 plt.legend()
 plt.show()
 
 plt.plot(degrees, mse_Test, label = "Test error")
-plt.plot(degrees, bias_Test, label = "Test Bias")
+plt.plot(degrees, bias_Test, label = "Bias")
 plt.plot(degrees, var, label = "Variance")
+plt.xlabel("Complexity")
+plt.ylabel("Error")
 #plt.ylim([0,1])
 plt.legend()
 plt.show()
