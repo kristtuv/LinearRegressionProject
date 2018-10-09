@@ -27,13 +27,14 @@ in the terminal
  **lasso.py:** Generating heat map of mse as a function of noise and lambda    
  **ridge.py:** Generating heat map of mse as a function of noise and lambd     
  **run_real_data.py:** Generating plots of mse vs degree and mse vs      
+ **misc_programs:** Directory contains programs used to generate example plots 
  **cls:** Package
  * **split_patches.py:*** Used to split terrain data into random patches of a given size    
  * **plotparams.py:** Parameters for ploting
  * **cls_reg.py:** Class containing linear regression methods ols, ridge and lasso; resampling k-fold and bootstrap; statistics MSE and R2    
  * **unit_test.py:** A few tests to make sure Lin_Reg class is working  
  * **Franke.py:** Generating data from franke function. Also plot if explicitly run.   
- **misc_programs:** Directory contains programs used to generate example plots 
+ 
 ### Data
 Contains different terrain data. SRTM_data_Norway_1.tif has been used in this project
 

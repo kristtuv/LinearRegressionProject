@@ -39,7 +39,7 @@ for i in range(len(degrees)):
         r2_test  = a.R2(a.z_Test, zpred_test)
 
         a.bootstrap(100, a.lasso)
-        conf_int = np.average(1.96*np.sqrt(a.beta_var))
+        conf_int = np.average(1.96*np.sqrt(a.betas_var))
         a.beta
 
         conf[j, i] = conf_int
