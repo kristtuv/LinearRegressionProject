@@ -1,7 +1,6 @@
 import numpy as np
 import scipy.linalg as scl
 from sklearn.preprocessing import PolynomialFeatures
-from Franke import FrankeFunction
 from sklearn.linear_model import LinearRegression, RidgeCV, Lasso
 from types import  MethodType
 from tqdm import tqdm
@@ -12,6 +11,7 @@ import matplotlib.pylab as plt
 def check_types(*args):
     """
     Decorator for checking types of function arguments
+    Used during testing
     """
     def decorator(func):
         def wrapper(*argswrapper):
@@ -26,7 +26,7 @@ def check_types(*args):
 
 
 class LinReg:
-    @check_types(np.ndarray, np.ndarray, np.ndarray, int)
+    # @check_types(np.ndarray, np.ndarray, np.ndarray, int)
     def __init__(self, x, y, z, deg):
         """
         :param x: 1darray of x values
@@ -66,6 +66,7 @@ class LinReg:
     def split_data(self, folds = None, frac = None, shuffle = False):
         """
         Splits the data into training and test. Give either frac or folds
+
         param: folds: Number of folds
         param: frac: Fraction of data to be test data
         param: shuffle: If True: shuffles the design matrix 
@@ -107,7 +108,7 @@ class LinReg:
             self.z_Test = z_Test
 
 
-    @check_types(np.ndarray, np.ndarray)
+    # @check_types(np.ndarray, np.ndarray)
     def ols(self, XY = None, z = None):
         """
         Performes a Ordinary least squares linear fit
@@ -133,7 +134,7 @@ class LinReg:
         self.conf_ols = 1.96*np.sqrt(np.diag(var))
         return beta
 
-    @check_types(np.ndarray, np.ndarray)
+    # @check_types(np.ndarray, np.ndarray)
     def ridge(self, XY = None, z = None):
         """
         Performes a Ridge regression linear fit
@@ -152,11 +153,6 @@ class LinReg:
         I = np.identity(XY.shape[1])
         XY_inv = scl.inv(XY.T @ XY + self.lamb*I)
         beta = XY_inv @ XY.T @ z
-        """
-        U, s, Vt = scl.svd(XY, full_matrices=False)
-        d = (s/(s **2 + self.lamb)).reshape(XY.shape[1], 1)
-        beta = Vt.T @ (d * U.T @ z)
-        """
         zpredict = XY @ beta
         varz = 1.0/(XY.shape[0] - self.deg - 1)*np.sum((z - zpredict)**2)
 
@@ -166,7 +162,7 @@ class LinReg:
         return beta
 
 
-    @check_types(np.ndarray, np.ndarray)
+    # @check_types(np.ndarray, np.ndarray)
     def lasso(self, XY = None, z = None):
         """
         Performes a Lasso regression linear fit
@@ -189,10 +185,11 @@ class LinReg:
 
         return beta
 
-    @check_types(np.ndarray, np.ndarray)
+    # @check_types(np.ndarray, np.ndarray)
     def MSE(self, z, zpred):
         """
         Finds the mean squared error of the real data and predicted values
+
         :param z: real data
         :param zpred: predicted data
         :type z: array
@@ -204,10 +201,11 @@ class LinReg:
         return 1.0/z.shape[0]*np.sum((z - zpred)**2)
 
 
-    @check_types(np.ndarray, np.ndarray)
+    # @check_types(np.ndarray, np.ndarray)
     def R2(self, z, zpred):
         """
         Finds the R2 error of the real data and predicted values
+
         :param z: real data
         :param zpred: predicted data
         :type z: array
@@ -227,6 +225,7 @@ class LinReg:
         Bootstraps the data defined in the instance
         and calculates the bias, variance, and average 
         mse training error and mse test error
+
         param: nBoots: Number of boostrap samples
         param: regressionmethod: ols, ridge or lasso
         type: nBoots: int
@@ -263,12 +262,13 @@ class LinReg:
 
         return bias, variance, train_error, test_error
 
-    @check_types(int, MethodType)
+    # @check_types(int, MethodType)
     def kfold(self, nfolds, regressionmethod):
         """
         Split data into folds and run k-fold algorithm
         and calculate average r2 and mse error for 
         for training and test
+
         param: nfolds: number of folds
         type: nfolds: int
         param: regressionmethod: ols, ridge or lasso

@@ -1,6 +1,6 @@
 import numpy as np
-from cls_reg import LinReg
-from Franke import FrankeFunction
+from cls.cls_reg import LinReg
+from cls.Franke import FrankeFunction
 import matplotlib.pylab as plt
 #import plotparams
 
@@ -39,7 +39,8 @@ for i in range(len(degrees)):
         r2_test  = a.R2(a.z_Test, zpred_test)
 
         a.bootstrap(100, a.lasso)
-        conf_int = np.average(1.96*np.sqrt(a.betas_var))
+        conf_int = np.average(1.96*np.sqrt(a.beta_var))
+        a.beta
 
         conf[j, i] = conf_int
 

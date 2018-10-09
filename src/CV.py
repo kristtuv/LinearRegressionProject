@@ -5,10 +5,10 @@ on the Franke function
 
 
 import numpy as np
-from cls_reg import LinReg
-from Franke import FrankeFunction
+from cls.cls_reg import LinReg
+from cls.Franke import FrankeFunction
 import matplotlib.pylab as plt
-import plotparams
+import cls.plotparams
 
 def CV_models(x, y, z, degrees, nfolds, regressionmethod, lambdas=[0], plot= False):
 

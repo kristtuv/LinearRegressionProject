@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Welcome to Linear Regression’s documentation! &#8212; Linear Regression 0.01 documentation</title>
+    <title>Documentation class LinReg &#8212; Linear Regression 0.01 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -38,8 +38,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="welcome-to-linear-regression-s-documentation">
-<h1>Welcome to Linear Regression’s documentation!<a class="headerlink" href="#welcome-to-linear-regression-s-documentation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="documentation-class-linreg">
+<h1>Documentation class LinReg<a class="headerlink" href="#documentation-class-linreg" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
 <span class="target" id="module-cls_reg"></span><dl class="class">
@@ -48,25 +48,49 @@
 <dd><dl class="method">
 <dt id="cls_reg.LinReg.MSE">
 <code class="descname">MSE</code><span class="sig-paren">(</span><em>z</em>, <em>zpred</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.MSE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.MSE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds the mean squared error of the real data and predicted values
-:param z: real data
-:param zpred: predicted data
-:type z: array
-:type zpred: array
-:return: The mean squared error
-:rtype: float</p>
+<dd><p>Finds the mean squared error of the real data and predicted values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>z</strong> (<em>array</em>) – real data</li>
+<li><strong>zpred</strong> (<em>array</em>) – predicted data</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The mean squared error</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="cls_reg.LinReg.R2">
 <code class="descname">R2</code><span class="sig-paren">(</span><em>z</em>, <em>zpred</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.R2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.R2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds the R2 error of the real data and predicted values
-:param z: real data
-:param zpred: predicted data
-:type z: array
-:type zpred: array
-:return: The mean squared error
-:rtype: float</p>
+<dd><p>Finds the R2 error of the real data and predicted values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>z</strong> (<em>array</em>) – real data</li>
+<li><strong>zpred</strong> (<em>array</em>) – predicted data</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The mean squared error</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -77,8 +101,9 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>XY</strong> (<em>array</em>) – A matrix of polynomialvalues</li>
-<li><strong>z</strong> (<em>array</em>) – The values we are trying to fit</li>
+<li><strong>x</strong> (<em>ndarray</em>) – 1darray of x values</li>
+<li><strong>y</strong> (<em>ndarray</em>) – 1darray of y values</li>
+<li><strong>z</strong> (<em>ndarray</em>) – The values we are trying to fit</li>
 <li><strong>deg</strong> (<em>int</em>) – The degree of polynomial we try to fit the data</li>
 </ul>
 </td>
@@ -95,19 +120,35 @@
 
 <dl class="method">
 <dt id="cls_reg.LinReg.bootstrap">
-<code class="descname">bootstrap</code><span class="sig-paren">(</span><em>nBoots</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.bootstrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.bootstrap" title="Permalink to this definition">¶</a></dt>
-<dd><p>I dont fucking know</p>
+<code class="descname">bootstrap</code><span class="sig-paren">(</span><em>nBoots</em>, <em>regressionmethod</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.bootstrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.bootstrap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootstraps the data defined in the instance
+and calculates the bias, variance, and average 
+mse training error and mse test error</p>
+<p>param: nBoots: Number of boostrap samples
+param: regressionmethod: ols, ridge or lasso
+type: nBoots: int
+type: regressionmethod: MethodType
+return: Bias, Variance, Training Error, Test Error
+rtype: float, float, float, float</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="cls_reg.LinReg.kfold">
-<code class="descname">kfold</code><span class="sig-paren">(</span><em>nfolds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.kfold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.kfold" title="Permalink to this definition">¶</a></dt>
-<dd><p>I dont fucking know</p>
+<code class="descname">kfold</code><span class="sig-paren">(</span><em>nfolds</em>, <em>regressionmethod</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.kfold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.kfold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split data into folds and run k-fold algorithm
+and calculate average r2 and mse error for 
+for training and test</p>
+<p>param: nfolds: number of folds
+type: nfolds: int
+param: regressionmethod: ols, ridge or lasso
+type: regressionmethod: MethodType
+return: mse_train, mse_test, r2_train, r2_test
+rtype: float, float, float, float</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="cls_reg.LinReg.lasso">
-<code class="descname">lasso</code><span class="sig-paren">(</span><em>lamb</em>, <em>XY=None</em>, <em>z=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.lasso"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.lasso" title="Permalink to this definition">¶</a></dt>
+<code class="descname">lasso</code><span class="sig-paren">(</span><em>XY=None</em>, <em>z=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.lasso"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.lasso" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performes a Lasso regression linear fit</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -116,7 +157,6 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>XY</strong> (<em>array</em>) – A matrix of polynomialvalues</li>
 <li><strong>z</strong> (<em>array</em>) – The values we are trying to fit</li>
-<li><strong>lamb</strong> (<em>float</em><em>, </em><em>int</em>) – The regularization constant</li>
 </ul>
 </td>
 </tr>
@@ -156,7 +196,7 @@
 
 <dl class="method">
 <dt id="cls_reg.LinReg.ridge">
-<code class="descname">ridge</code><span class="sig-paren">(</span><em>lamb</em>, <em>XY=None</em>, <em>z=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.ridge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.ridge" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ridge</code><span class="sig-paren">(</span><em>XY=None</em>, <em>z=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.ridge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.ridge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performes a Ridge regression linear fit</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -165,7 +205,6 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>XY</strong> (<em>array</em>) – A matrix of polynomialvalues</li>
 <li><strong>z</strong> (<em>array</em>) – The values we are trying to fit</li>
-<li><strong>lamb</strong> (<em>float</em><em>, </em><em>int</em>) – The regularization constant</li>
 </ul>
 </td>
 </tr>
@@ -177,6 +216,19 @@
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cls_reg.LinReg.split_data">
+<code class="descname">split_data</code><span class="sig-paren">(</span><em>folds=None</em>, <em>frac=None</em>, <em>shuffle=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cls_reg.html#LinReg.split_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cls_reg.LinReg.split_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits the data into training and test. Give either frac or folds</p>
+<p>param: folds: Number of folds
+param: frac: Fraction of data to be test data
+param: shuffle: If True: shuffles the design matrix 
+type: folds: int
+type: frac: float
+type: shuffle: Bool
+return: None</p>
 </dd></dl>
 
 </dd></dl>

@@ -1,9 +1,9 @@
 import numpy as np
-from cls_reg import LinReg
-from Franke import FrankeFunction
+from cls.cls_reg import LinReg
+from cls.Franke import FrankeFunction
 import matplotlib.pylab as plt
-import plotparams
-from split_patches import split_patches
+import cls.plotparams
+from cls.split_patches import split_patches
 from imageio import imread
 import time
 
@@ -64,7 +64,7 @@ nfolds = 5
 degrees = range(8)
 nbest = 10
 
-z = imread('data/SRTM_data_Norway_2.tif')[:-1, :-1]
+z = imread('../data/SRTM_data_Norway_1.tif')[:-1, :-1]
 z = z/np.max(z)
 x = np.linspace(0,1, z.shape[0])
 y = np.linspace(0,1, z.shape[1])

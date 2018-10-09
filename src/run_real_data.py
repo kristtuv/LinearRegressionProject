@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import plotparams
-from cls_reg import LinReg
-from split_patches import split_patches
+import cls.plotparams
+from cls.cls_reg import LinReg
+from cls.split_patches import split_patches
 from imageio import imread
 import time
 from tqdm import tqdm
@@ -11,7 +11,7 @@ from tqdm import tqdm
 ############################
 #Spliting data into patches
 ############################
-z = imread('data/n58_e006_1arc_v3.tif')[:-1, :-1]
+z = imread('../data/n58_e006_1arc_v3.tif')[:-1, :-1]
 z = z/np.max(z)
 x = np.linspace(0,1, z.shape[0])
 y = np.linspace(0,1, z.shape[1])
@@ -50,7 +50,7 @@ def lasso():
         plt.plot(mse_Test, label = 'Test')
         plt.plot(mse_Train, label = 'Train')
         plt.legend()
-        plt.savefig('plots/realdata/Lasso_lamb%s_scaled.png'%(lamda))
+        #plt.savefig('../plots/realdata/Lasso_lamb%s_scaled.png'%(lamda))
         plt.close()
 def ridge():
     "Run plotter for ridge mse vs degree"
@@ -72,7 +72,7 @@ def ridge():
         plt.plot(mse_Test, label = 'Test')
         plt.plot(mse_Train, label = 'Train')
         plt.legend()
-        plt.savefig('plots/realdata/Ridge_lamb%s_scaled.png'%(lamda))
+        #plt.savefig('../plots/realdata/Ridge_lamb%s_scaled.png'%(lamda))
         plt.close()
 def ols():
     "Run plotter for ols mse vs degree"
@@ -91,7 +91,7 @@ def ols():
     plt.plot(mse_Test, label = 'Test')
     plt.plot(mse_Train, label = 'Train')
     plt.legend()
-    plt.savefig('plots/realdata/Ols_scaled.png')
+    #plt.savefig('../plots/realdata/Ols_scaled.png')
     plt.close()
 
 def lasso_lamb():
@@ -115,7 +115,7 @@ def lasso_lamb():
         plt.plot(np.log10(lambdas_lasso), mse_Test, label = 'Test')
         plt.plot(np.log10(lambdas_lasso), mse_Train, label = 'Train')
         plt.legend()
-        plt.savefig('plots/realdata/Lasso_deg%s_scaled.png'%(deg))
+        #plt.savefig('../plots/realdata/Lasso_deg%s_scaled.png'%(deg))
         plt.close()
 def ridge_lamb():
     "Run plotter for ridge mse vs lambda"
@@ -138,7 +138,7 @@ def ridge_lamb():
         plt.plot(np.log10(lambdas_ridge), mse_Test, label = 'Test')
         plt.plot(np.log10(lambdas_ridge), mse_Train, label = 'Train')
         plt.legend()
-        plt.savefig('plots/realdata/Ridge_deg%s_scaled.png'%(deg))
+        #plt.savefig('../plots/realdata/Ridge_deg%s_scaled.png'%(deg))
         plt.close()
 
 if __name__=='__main__':
