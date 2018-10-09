@@ -1,4 +1,4 @@
- #Linear Regression analysis
+# Linear Regression analysis   
 This is a project comparing the popular linear regression methods Ordinary Least Squares, Ridge and Lasso Regression. All the methods are evaluated first on the famous Franke function, and then on real data from https://earthexplorer.usgs.gov/.
 
 ## Build with
