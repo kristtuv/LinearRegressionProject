@@ -18,20 +18,20 @@ View documentation by opening index.html file
 
 
 ### Src 
-unit_test.py: A few tests to make sure Lin_Reg class is working   
-Franke.py: Generating data from franke function. Also plot if explicitly run   
-CV.py: Running cross validation and bootstrap on franke function   
-CV_terrain.py: Running crossvalidation and bootstrap on real data   
-cls_reg.py: Class containing linear regression methods ols, ridge and lasso; resampling k-fold and bootstrap; statistics MSE and R2  
-ols.py
-lasso.py
-ridge.py
-run_real_data.py: Generating plots of mse vs degree and mse vs  
-split_patches.py: Used to split terrain data into random patches of a given size
-
-
-misc_programs: directory contains programs used to generate example plots
-
+ **CV.py:** Running cross validation and bootstrap on franke function   
+ **CV_terrain.py:** Running crossvalidation and bootstrap on real data   
+ **Franke.py:** Generating data from franke function. Also plot if explicitly run.   
+ **Bias_variance_ols.py:** Examine the bias vairance trade of     
+ **cls_reg.py:** Class containing linear regression methods ols, ridge and lasso;     
+ **unit_test.py:** A few tests to make sure Lin_Reg class is working     
+ resampling k-fold and bootstrap; statistics MSE and R2     
+ **ols.py:** Generating plot of mse vs complexity for ordinary least squares    
+ **lasso.py:** Generating heat map of mse as a function of noise and lambda    
+ **ridge.py:** Generating heat map of mse as a function of noise and lambd     
+ **run_real_data.py:** Generating plots of mse vs degree and mse vs      
+ **split_patches.py:** Used to split terrain data into random patches of a given size    
+ **plotparmas.py:** Parameters for ploting
+ **misc_programs:** Directory contains programs used to generate example plots       
 ### Data
 Contains different terrain data. SRTM_data_Norway_1.tif has been used in this project
 

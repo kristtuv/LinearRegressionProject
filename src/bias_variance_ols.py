@@ -1,6 +1,6 @@
 """
-Ploting mse bias variance decomosition
-for OLS
+Plotting mse bias variance decomosition
+for OLS ont he franke function
 """
 
 import numpy as np

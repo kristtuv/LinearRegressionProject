@@ -1,3 +1,9 @@
+"""
+Running Cross-validation and bootstrap 
+on the Franke function
+"""
+
+
 import numpy as np
 from cls_reg import LinReg
 from Franke import FrankeFunction
