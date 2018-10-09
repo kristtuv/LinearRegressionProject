@@ -60,8 +60,8 @@ def CV_models(x, y, z, degrees, nfolds, regressionmethod, lambdas=[0], plot= Fal
         print("-"*64)
 
 
-nfolds = 5 
-degrees = range(8)
+nfolds = 5
+degrees = range(12)
 nbest = 10
 
 z = imread('../data/SRTM_data_Norway_1.tif')[:-1, :-1]
@@ -71,8 +71,8 @@ y = np.linspace(0,1, z.shape[1])
 
 
 start = time.time()
-num_patches = 5 
-x, y, z = split_patches(x, y, z, 36, 18, num_patches)
+num_patches = 5
+x, y, z = split_patches(x, y, z, 18, 9, num_patches)
 stop = time.time()
 print('Split patches time: ', stop - start)
 
@@ -109,4 +109,3 @@ print("-"*75)
 for i in range(nbest):
     #print("%i." % (i+1), " | ".join(map(lambda x: str(x)[:8], best_models[i])))
     print("%3i:%8s|%8i|%8g|%10g|%10f|%10f|%10f|%10f|" % (tuple([i+1] + best_models[i])))
-

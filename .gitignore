@@ -1,7 +1,6 @@
 __pycache__/*
 *.swp
-<<<<<<< Updated upstream
 *.pyc
-=======
 test/
->>>>>>> Stashed changes
+.cache/*
+cahce/*
